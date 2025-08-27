@@ -34,34 +34,35 @@ Proyecto de aplicación de finanzas personales usando FastAPI + Angular.
 
 
 ## 🗂 Estructura de carpetas
-finanzas_personales/
-│
-├─ backend/
-│   ├─ app/
-│   │   ├─ main.py              # Punto de entrada FastAPI
-│   │   ├─ models.py            # Modelos de MongoDB (Motor)
-│   │   ├─ schemas.py           # Pydantic schemas (validación/serialización)
-│   │   ├─ crud.py              # Funciones CRUD para usuarios, transacciones, categorías
-│   │   ├─ api/
-│   │   │   ├─ users.py         # Endpoints de usuarios
-│   │   │   ├─ transactions.py  # Endpoints de transacciones
-│   │   │   └─ categories.py    # Endpoints de categorías
-│   │   └─ config.py            # Configuración (DB URI, JWT, etc.)
-│   │
-│   ├─ tests/                   # Tests de endpoints y modelos
-│   └─ requirements.txt         # Dependencias Python
-│
-├─ frontend/
-│   ├─ angular.json             # Configuración Angular
-│   ├─ package.json
-│   ├─ src/
-│   │   ├─ app/
-│   │   │   ├─ components/      # Componentes reutilizables
-│   │   │   ├─ pages/           # Páginas (dashboard, login, transacciones)
-│   │   │   ├─ services/        # Servicios Angular (API calls)
-│   │   │   └─ app.module.ts
-│   │   └─ assets/              # Imágenes, estilos, iconos
-│   └─ tsconfig.json
-│
-├─ README.md
-└─ .gitignore
+finanzas_personales/  
+│  
+├─ backend/  
+│   ├─ app/  
+│   │   ├─ main.py              # Punto de entrada FastAPI  
+│   │   ├─ models.py            # Modelos de MongoDB (Motor)  
+│   │   ├─ schemas.py           # Pydantic schemas (validación/serialización)  
+│   │   ├─ crud.py              # Funciones CRUD para usuarios, transacciones, categorías  
+│   │   ├─ api/  
+│   │   │   ├─ users.py         # Endpoints de usuarios  
+│   │   │   ├─ transactions.py  # Endpoints de transacciones  
+│   │   │   └─ categories.py    # Endpoints de categorías  
+│   │   └─ config.py            # Configuración (DB URI, JWT, etc.)  
+│   │  
+│   ├─ tests/                   # Tests de endpoints y modelos  
+│   └─ requirements.txt         # Dependencias Python  
+│  
+├─ frontend/  
+│   ├─ angular.json             # Configuración Angular  
+│   ├─ package.json  
+│   ├─ src/  
+│   │   ├─ app/  
+│   │   │   ├─ components/      # Componentes reutilizables  
+│   │   │   ├─ pages/           # Páginas (dashboard, login, transacciones)  
+│   │   │   ├─ services/        # Servicios Angular (API calls)  
+│   │   │   └─ app.module.ts  
+│   │   └─ assets/              # Imágenes, estilos, iconos  
+│   └─ tsconfig.json  
+│  
+├─ .env  
+├─ README.md  
+└─ .gitignore  
