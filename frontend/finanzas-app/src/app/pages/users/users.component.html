@@ -1,0 +1,14 @@
+<h2>Usuarios</h2>
+
+<div>
+  <input type="text" placeholder="Username" [(ngModel)]="username">
+  <input type="email" placeholder="Email" [(ngModel)]="email">
+  <button (click)="addUser()">Añadir</button>
+</div>
+
+<ul>
+  <li *ngFor="let user of users">
+    {{user.username}} ({{user.email}})
+    <button (click)="deleteUser(user.id)">Borrar</button>
+  </li>
+</ul>

@@ -1,0 +1,16 @@
+<h2>Transacciones</h2>
+
+<div>
+  <input type="text" placeholder="ID Usuario" [(ngModel)]="userId">
+  <input type="text" placeholder="ID Categoría" [(ngModel)]="categoryId">
+  <input type="number" placeholder="Cantidad" [(ngModel)]="amount">
+  <input type="text" placeholder="Descripción" [(ngModel)]="description">
+  <button (click)="addTransaction()">Añadir</button>
+</div>
+
+<ul>
+  <li *ngFor="let transaction of transactions">
+    Usuario: {{transaction.user_id}}, Categoría: {{transaction.category_id}}, Monto: {{transaction.amount}}, Desc: {{transaction.description}}
+    <button (click)="deleteTransaction(transaction.id)">Borrar</button>
+  </li>
+</ul>

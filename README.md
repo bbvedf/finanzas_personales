@@ -1,8 +1,8 @@
-# Finanzas Personales
+# Finanzas Personales  
 
-Proyecto de aplicación de finanzas personales usando FastAPI + Angular.
+Proyecto de aplicación de finanzas personales usando FastAPI + Angular.  
 
-## Stack Tecnológico
+## Stack Tecnológico  
 
 ![Python](https://img.shields.io/badge/python-3.11-blue)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.101.0-green)
@@ -11,29 +11,57 @@ Proyecto de aplicación de finanzas personales usando FastAPI + Angular.
 ![Docker](https://img.shields.io/badge/Docker-enabled-blue)
 ![WSL](https://img.shields.io/badge/WSL-Ubuntu%2020.04-orange)
 
-## Roadmap de desarrollo
 
-### Fase 1: Backend y CRUD básico
-- Configuración de entorno Python + virtualenv
-- FastAPI: endpoints CRUD para usuarios, categorías y transacciones
-- Conexión a MongoDB
-- Testing básico
-
-### Fase 2: Dashboard y análisis
-- Endpoints para estadísticas y agregados
-- Angular: listado de transacciones, filtros, gráficos
-
-### Fase 3: Funcionalidades adicionales
-- Exportación a CSV/Excel
-- Notificaciones o alertas (Celery opcional)
-- Mejoras de UX/UI
-
-### Fase 4: Opcional
-- Multiusuario y compartición de datos
-- Integración con app móvil
+## Requisitos  
+- Python 3.10+  
+- FastAPI  
+- Node.js >= 18  
+- Angular CLI  
 
 
-## 🗂 Estructura de carpetas
+## Desarrollo  
+### Backend  
+```bash
+cd backend
+pip install -r requirements.txt
+uvicorn app.main:app --reload
+```
+
+La API se expone en http://localhost:8000  
+
+### Frontend  
+```bash
+cd frontend/finanzas-app
+npm install
+ng serve
+```
+
+Acceder en http://localhost:4200  
+
+
+## Roadmap de desarrollo  
+
+### Fase 1: Backend y CRUD básico  
+- Configuración de entorno Python + virtualenv  
+- FastAPI: endpoints CRUD para usuarios, categorías y transacciones  
+- Conexión a MongoDB  
+- Testing básico  
+
+### Fase 2: Dashboard y análisis  
+- Endpoints para estadísticas y agregados  
+- Angular: listado de transacciones, filtros, gráficos  
+
+### Fase 3: Funcionalidades adicionales  
+- Exportación a CSV/Excel  
+- Notificaciones o alertas (Celery opcional)  
+- Mejoras de UX/UI  
+
+### Fase 4: Opcional  
+- Multiusuario y compartición de datos  
+- Integración con app móvil  
+
+
+## 🗂 Estructura de carpetas  
 finanzas_personales/  
 │  
 ├─ backend/  
@@ -52,16 +80,34 @@ finanzas_personales/
 │   └─ requirements.txt         # Dependencias Python  
 │  
 ├─ frontend/  
-│   ├─ angular.json             # Configuración Angular  
-│   ├─ package.json  
-│   ├─ src/  
-│   │   ├─ app/  
-│   │   │   ├─ components/      # Componentes reutilizables  
-│   │   │   ├─ pages/           # Páginas (dashboard, login, transacciones)  
-│   │   │   ├─ services/        # Servicios Angular (API calls)  
-│   │   │   └─ app.module.ts  
-│   │   └─ assets/              # Imágenes, estilos, iconos  
-│   └─ tsconfig.json  
+│   └─ finanzas-app/  
+│       ├── README.md  
+│       ├── angular.json  
+│       ├── package-lock.json  
+│       ├── package.json  
+│       ├── public  
+│       │   └── favicon.ico  
+│       ├── src  
+│       │   ├── app  
+│       │   │   ├── app.component.css  
+│       │   │   ├── app.component.html  
+│       │   │   ├── app.component.spec.ts  
+│       │   │   ├── app.component.ts  
+│       │   │   ├── app.config.ts  
+│       │   │   ├── app.routes.ts  #Define las rutas y redirecciones  
+│       │   │   ├── core  
+│       │   │   │   ├── models     #Tipos TypeScript de las entidades  
+│       │   │   │   └── services   #Servicios que llaman al backend FastAPI  
+│       │   │   └── pages          #Componentes UI de cada entidad.  
+│       │   │       ├── categories  
+│       │   │       ├── transactions  
+│       │   │       └── users  
+│       │   ├── index.html  
+│       │   ├── main.ts  
+│       │   └── styles.css  
+│       ├── tsconfig.app.json  
+│       ├── tsconfig.json  
+│       └── tsconfig.spec.json  
 │  
 ├─ .env  
 ├─ README.md  
