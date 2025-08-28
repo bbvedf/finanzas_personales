@@ -1,5 +1,6 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 from typing import Optional
+from datetime import datetime
 
 # Usuario
 class UserCreate(BaseModel):
@@ -26,7 +27,9 @@ class TransactionCreate(BaseModel):
     user_id: str
     category_id: str
     amount: float
-    description: Optional[str] = None
+    description: str | None = None
+    date: datetime = Field(default_factory=datetime.utcnow)
+
 
 class TransactionOut(BaseModel):
     id: str
@@ -34,4 +37,5 @@ class TransactionOut(BaseModel):
     category_id: str
     amount: float
     description: Optional[str] = None
+    date: datetime
 
