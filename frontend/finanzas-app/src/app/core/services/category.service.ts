@@ -14,11 +14,19 @@ export class CategoryService {
     return this.http.get<Category[]>(this.baseUrl);
   }
 
+  getCategory(id: string): Observable<Category> {
+    return this.http.get<Category>(`${this.baseUrl}/${id}`);
+  }
+
   createCategory(category: Partial<Category>): Observable<Category> {
     return this.http.post<Category>(this.baseUrl, category);
   }
 
   deleteCategory(id: string): Observable<{ status: string }> {
     return this.http.delete<{ status: string }>(`${this.baseUrl}/${id}`);
-  }
+  }  
+
+  updateCategory(id: string, category: Partial<Category>): Observable<Category> {
+    return this.http.put<Category>(`${this.baseUrl}/${id}`, category);
+  }  
 }

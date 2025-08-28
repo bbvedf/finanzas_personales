@@ -1,14 +1,56 @@
-<h2>Usuarios</h2>
+<!-- frontend/finanzas-app/src/app/pages/users/users.component.html -->
+<div class="page-container">
+  <h2 class="page-title">Usuarios</h2>
 
-<div>
-  <input type="text" placeholder="Username" [(ngModel)]="username">
-  <input type="email" placeholder="Email" [(ngModel)]="email">
-  <button (click)="addUser()">Añadir</button>
+  <div class="container">
+    <!-- Formulario en card independiente -->
+    <div class="form-col">
+      <div class="card form-card">
+        <div class="form-field">
+          <label for="username">Username</label>
+          <input id="username" [(ngModel)]="username" placeholder="Username">
+        </div>
+
+        <div class="form-field">
+          <label for="email">Email</label>
+          <input id="email" [(ngModel)]="email" type="email" placeholder="Email">
+        </div>
+
+        <button class="button" (click)="submitForm()">
+          {{ currentUserId ? 'Actualizar' : 'Añadir' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Tabla en card independiente -->
+    <div class="table-col">
+      <div class="table-card">
+        <div class="table-wrapper">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of users">
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>
+                  <button class="icon-button edit-button" (click)="editUser(user)">
+                    <i class="fas fa-pencil-alt"></i>
+                  </button>
+                  <button class="icon-button delete-button" (click)="deleteUser(user.id)">
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-
-<ul>
-  <li *ngFor="let user of users">
-    {{user.username}} ({{user.email}})
-    <button (click)="deleteUser(user.id)">Borrar</button>
-  </li>
-</ul>

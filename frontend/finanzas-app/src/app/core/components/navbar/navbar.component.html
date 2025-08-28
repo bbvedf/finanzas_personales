@@ -1,0 +1,30 @@
+<!-- src/app/core/components/navbar/navbar.component.html -->
+<div class="navbar-container">
+  <header class="toolbar">
+    <span class="toolbar-title">Finanzas Personales</span>
+    <span class="spacer"></span>
+    <button class="hamburger-button" (click)="toggleMenu()" aria-label="Menú">
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+    </button>
+  </header>
+
+  <!-- Dropdown del menú -->
+  <div class="menu-dropdown" *ngIf="isOpen">
+    <button class="menu-item" (click)="navigateTo('/users')">
+      <i class="fas fa-users"></i> Users
+    </button>
+    <button class="menu-item" (click)="navigateTo('/categories')">
+      <i class="fas fa-list"></i> Categories
+    </button>
+    <button class="menu-item" (click)="navigateTo('/transactions')">
+      <i class="fas fa-exchange-alt"></i> Transactions
+    </button>
+    <div class="menu-divider"></div>
+    <button class="menu-item" (click)="setTheme(currentTheme === 'light' ? 'dark' : 'light')">
+      <i class="fas" [class]="currentTheme === 'light' ? 'fa-moon' : 'fa-sun'"></i>
+      {{ currentTheme === 'light' ? 'Modo Oscuro' : 'Modo Claro' }}
+    </button>
+  </div>
+</div>

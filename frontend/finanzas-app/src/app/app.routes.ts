@@ -1,13 +1,12 @@
-// frontend/finanzas-app/src/app/app.routes.ts
+// src/app/app.routes.ts
 import { Routes } from '@angular/router';
 import { UsersComponent } from './pages/users/users.component';
-import { CategoriesComponent } from './pages/categories/categories.component';
-import { TransactionsComponent } from './pages/transactions/transactions.component';
+import { CategoriesComponent } from './pages/categories/categories.component'; // Asegúrate de crearlo
+import { TransactionsComponent } from './pages/transactions/transactions.component'; // Asegúrate de crearlo
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/users', pathMatch: 'full' },  // ruta por defecto
   { path: 'users', component: UsersComponent },
   { path: 'categories', component: CategoriesComponent },
   { path: 'transactions', component: TransactionsComponent },
-  { path: '**', redirectTo: '/users' }  // cualquier ruta desconocida
+  { path: '', redirectTo: '/users', pathMatch: 'full' }
 ];

@@ -1,16 +1,68 @@
-<h2>Transacciones</h2>
+<!--frontend/finanzas-app/src/app/pages/transactions/transactions.component.html -->
+<div class="page-container">
+    <h2 class="page-title">Transacciones</h2>
 
-<div>
-  <input type="text" placeholder="ID Usuario" [(ngModel)]="userId">
-  <input type="text" placeholder="ID Categoría" [(ngModel)]="categoryId">
-  <input type="number" placeholder="Cantidad" [(ngModel)]="amount">
-  <input type="text" placeholder="Descripción" [(ngModel)]="description">
-  <button (click)="addTransaction()">Añadir</button>
+    <div class="container">
+        <!-- Formulario -->
+        <div class="form-col">
+            <div class="card form-card">
+                <div class="form-field">
+                    <label for="userId">ID Usuario</label>
+                    <input id="userId" [(ngModel)]="userId" placeholder="ID Usuario">
+                </div>
+                <div class="form-field">
+                    <label for="categoryId">ID Categoría</label>
+                    <input id="categoryId" [(ngModel)]="categoryId" placeholder="ID Categoría">
+                </div>
+                <div class="form-field">
+                    <label for="amount">Cantidad</label>
+                    <input id="amount" type="number" [(ngModel)]="amount" placeholder="Cantidad">
+                </div>
+                <div class="form-field">
+                    <label for="description">Descripción</label>
+                    <input id="description" [(ngModel)]="description" placeholder="Descripción">
+                </div>
+
+                <button class="button" (click)="submitForm()">
+                    {{ currentTransactionId ? 'Actualizar' : 'Añadir' }}
+                </button>
+            </div>
+        </div>
+
+        <!-- Tabla -->
+        <div class="table-col">
+            <div class="table-card">
+                <div class="table-wrapper">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Usuario</th>
+                                <th>Categoría</th>
+                                <th>Monto</th>
+                                <th>Descripción</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let transaction of transactions">
+                                <td>{{ transaction.user_id }}</td>
+                                <td>{{ transaction.category_id }}</td>
+                                <td>{{ transaction.amount }}</td>
+                                <td>{{ transaction.description }}</td>
+                                <td>
+                                    <button class="icon-button edit-button" (click)="editTransaction(transaction)">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </button>
+                                    <button class="icon-button delete-button"
+                                        (click)="deleteTransaction(transaction.id)">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-
-<ul>
-  <li *ngFor="let transaction of transactions">
-    Usuario: {{transaction.user_id}}, Categoría: {{transaction.category_id}}, Monto: {{transaction.amount}}, Desc: {{transaction.description}}
-    <button (click)="deleteTransaction(transaction.id)">Borrar</button>
-  </li>
-</ul>

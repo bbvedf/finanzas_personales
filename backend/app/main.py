@@ -2,8 +2,23 @@ from fastapi import FastAPI
 from app.api import users, categories, transactions
 from app.config import settings
 from motor.motor_asyncio import AsyncIOMotorClient
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="Finanzas Personales Backend")
+
+# Configuración CORS
+origins = [
+    "http://localhost:4200",  # Angular dev server
+    
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],       # GET, POST, PUT, DELETE
+    allow_headers=["*"],       # Content-Type, Authorization...
+)
 
 # Conexión a MongoDB
 @app.on_event("startup")

@@ -1,0 +1,22 @@
+// src/app/app.component.scss
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* evita barra extra */
+}
+
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;       /* toda la pantalla */
+  overflow: hidden;    /* evita scroll extra */
+}
+
+.main-content {
+  margin-top: 64px;    /* altura exacta del navbar */
+  flex: 1;             /* ocupa el resto de la pantalla */
+  padding: 1rem;
+  overflow-y: auto;    /* scroll solo aquí */
+  /*background: var(--color-bg);*/
+}

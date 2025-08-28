@@ -104,7 +104,7 @@ finanzas_personales/
 │       │   │       └── users  
 │       │   ├── index.html  
 │       │   ├── main.ts  
-│       │   └── styles.css  
+│       │   └── styles.scss  
 │       ├── tsconfig.app.json  
 │       ├── tsconfig.json  
 │       └── tsconfig.spec.json  
