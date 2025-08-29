@@ -1,0 +1,58 @@
+/* pagination.component.scss */
+.table-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-top: 1px solid #ddd;
+  font-size: 0.9rem;
+}
+
+/* Contenedor de filas por página */
+.page-size {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* espacio entre elementos */
+}
+
+/* Contenedor de paginación */
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Inputs y select */
+.table-footer select,
+.table-footer input {
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 0.9rem;
+  width: auto;
+}
+
+/* Botones */
+.table-footer button {
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  /*background-color: #f5f5f5;*/
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+
+.table-footer button:hover {
+  /*background-color: #e0e0e0;*/
+}
+
+.table-footer button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.total_records {
+  display: flex;
+  align-items: center;  
+}   

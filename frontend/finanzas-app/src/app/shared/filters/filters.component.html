@@ -1,0 +1,43 @@
+<ng-container ngProjectAs="tr">
+  <th *ngFor="let column of columns" class="th-with-overlay">
+    <div class="th-content">
+      <span class="col-label">{{ column.label }}</span>
+      <button class="filter-icon" (click)="openFilter(column.key)">
+        <i class="{{ filters[column.key]?.value ? 'bi bi-funnel-fill' : 'bi bi-funnel' }}"></i>
+      </button>
+      <button class="sort-button" (click)="toggleSort(column.key)">
+        <i class="bi" [ngClass]="{
+          'bi-arrow-up': filters[column.key]?.sortDirection === 'asc',
+          'bi-arrow-down': filters[column.key]?.sortDirection === 'desc',
+          'bi-arrow-down-up': !filters[column.key]?.sortDirection
+        }"></i>
+      </button>
+    </div>
+    <div *ngIf="activeFilter === column.key" class="filter-overlay">
+      <ng-container [ngSwitch]="column.filterType || 'text'">
+        <div *ngSwitchCase="'text'">
+          <select [(ngModel)]="tempFilters[column.key].mode">
+            <option value="contains">Contiene</option>
+            <option value="startsWith">Comienza con</option>
+            <option value="endsWith">Termina con</option>
+            <option value="equals">Igual a</option>
+          </select>
+          <input type="text" [(ngModel)]="tempFilters[column.key].value" [placeholder]="'Filtrar ' + column.label.toLowerCase()">
+        </div>
+        <div *ngSwitchCase="'number'">
+          <input type="number" [(ngModel)]="tempFilters[column.key].min" placeholder="Mínimo">
+          <input type="number" [(ngModel)]="tempFilters[column.key].max" placeholder="Máximo">
+        </div>
+        <div *ngSwitchCase="'date'">
+          <input type="date" [(ngModel)]="tempFilters[column.key].start" placeholder="Desde">
+          <input type="date" [(ngModel)]="tempFilters[column.key].end" placeholder="Hasta">
+        </div>
+      </ng-container>
+      <div class="filter-buttons">
+        <button class="button cancel-button" (click)="cancelFilter()">Cancelar</button>
+        <button class="button" (click)="applyFilter()">Aplicar</button>
+      </div>
+    </div>
+  </th>
+  <th>Acciones</th>
+</ng-container>

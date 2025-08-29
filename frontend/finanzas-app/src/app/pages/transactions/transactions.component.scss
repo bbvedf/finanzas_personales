@@ -105,16 +105,11 @@
   background: var(--color-card-bg);
 
   th, td {
+    position: relative;
     padding: 0.8rem;
     text-align: left;
     border-bottom: 1px solid var(--color-input-border);
     color: var(--color-text);
-  }
-
-  th {
-    font-weight: bold;
-    background: var(--color-card-bg);
-    position: relative;
   }
 }
 
@@ -204,26 +199,21 @@
   }
 }
 
-.filter-icon {
+.icon-group {
+  display: inline-flex;
+  gap: 4px;        // pequeño espacio entre filter y sort
+  float: right;     // empuja el grupo a la derecha
+}
+
+.icon-group .filter-icon,
+.icon-group .sort-icon {
+  margin: 0;        // elimina márgenes extra
+  padding: 2px;     // pequeño “respiradero” interno
+  font-size: 1rem;
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 1rem;
   color: var(--color-text);
-  margin-left: 5px;
-  transition: color 0.2s;
-
-  &:hover {
-    color: var(--color-link);
-  }
-
-  .fa-light {
-    font-weight: 300;
-  }
-
-  .fa-solid {
-    font-weight: 900;
-  }
 }
 
 .filter-overlay {
@@ -303,3 +293,26 @@
   justify-content: space-between;
   margin-top: 20px;
 }
+
+
+
+/*
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+  text-align: center;
+}
+*/

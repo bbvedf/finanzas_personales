@@ -1,0 +1,45 @@
+<!-- frontend/finanzas-app/src/app/shared/pagination/pagination.component.html -->
+<div class="table-footer">
+  <!-- Selector de filas por página + input manual -->
+  <div class="page-size">
+    <label>Filas por página:</label>
+
+    <!-- Select predefinido -->
+    <select [(ngModel)]="pageSize" (ngModelChange)="changePageSize($event)">
+      <option [value]="5">5</option>
+      <option [value]="10">10</option>
+      <option [value]="20">20</option>
+      <option [value]="50">50</option>
+    </select>
+
+    <!-- Input manual -->
+    <input type="number" [(ngModel)]="manualPageSize" placeholder="Otro..." min="1" style="width: 60px;">
+    <button (click)="applyManualPageSize()">OK</button>
+  </div>
+
+    <!-- Total de registros -->
+    <div class="total_records">
+        <span class="page-info">{{ totalItems }} registros</span>
+    </div>
+
+  <!-- Navegación de páginas -->
+  <div class="pagination">
+    <button (click)="prevPage()" [disabled]="currentPage === 1">Anterior</button>
+
+    <label>Página:</label>
+
+    <!-- Select de páginas -->
+    <select [(ngModel)]="currentPage" (ngModelChange)="goToPage($event)">
+      <option *ngFor="let p of [].constructor(calculatedTotalPages); let i = index" [value]="i + 1">
+        {{ i + 1 }}
+      </option>
+    </select>
+
+    <button (click)="nextPage()" [disabled]="currentPage === calculatedTotalPages">Siguiente</button>
+
+    <!-- Input manual para ir a página -->
+    <input type="number" [(ngModel)]="manualPage" placeholder="Ir a..." min="1" [max]="calculatedTotalPages" style="width: 60px;">
+    <button (click)="applyManualPage()">OK</button>
+  </div>
+   
+</div>

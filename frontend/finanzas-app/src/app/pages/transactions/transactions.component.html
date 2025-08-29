@@ -1,4 +1,3 @@
-<!-- frontend/finanzas-app/src/app/pages/transactions/transactions.component.html -->
 <div class="page-container">
     <h2 class="page-title">Transacciones</h2>
 
@@ -8,23 +7,23 @@
             <div class="card form-card">
                 <div class="form-field">
                     <label for="user">Usuario</label>
-                    <input id="user" [(ngModel)]="userId" placeholder="ID Usuario">
+                    <input id="user" [(ngModel)]="userId" placeholder="ID Usuario" />
                 </div>
                 <div class="form-field">
                     <label for="category">Categoría</label>
-                    <input id="category" [(ngModel)]="categoryId" placeholder="ID Categoría">
+                    <input id="category" [(ngModel)]="categoryId" placeholder="ID Categoría" />
                 </div>
                 <div class="form-field">
                     <label for="amount">Cantidad</label>
-                    <input id="amount" type="number" [(ngModel)]="amount" placeholder="Cantidad">
+                    <input id="amount" type="number" [(ngModel)]="amount" placeholder="Cantidad" />
                 </div>
                 <div class="form-field">
                     <label for="description">Descripción</label>
-                    <input id="description" [(ngModel)]="description" placeholder="Descripción">
+                    <input id="description" [(ngModel)]="description" placeholder="Descripción" />
                 </div>
                 <div class="form-field">
                     <label for="date">Fecha</label>
-                    <input id="date" type="date" [(ngModel)]="date" placeholder="Fecha">
+                    <input id="date" type="date" [(ngModel)]="date" placeholder="Fecha" />
                 </div>
                 <div class="form-buttons">
                     <button *ngIf="currentTransactionId" class="button cancel-button"
@@ -32,7 +31,6 @@
                     <button class="button" (click)="submitForm()">
                         {{ currentTransactionId ? 'Actualizar' : 'Añadir' }}
                     </button>
-
                 </div>
             </div>
         </div>
@@ -41,7 +39,6 @@
         <div class="table-col">
             <div class="table-card">
                 <div class="table-wrapper">
-                    <!-- Fila superior: Botón Clear Filters y búsqueda global -->
                     <div class="table-caption">
                         <button class="button" (click)="clearFilters()">Quitar filtros</button>
                         <div class="search-container">
@@ -54,10 +51,19 @@
                             <tr>
                                 <th>
                                     Usuario
-                                    <button class="filter-icon" (click)="toggleFilter('user_id')">
-                                        <i
-                                            class="{{ filters.user_id.value ? 'bi bi-funnel-fill' : 'bi bi-funnel' }}"></i>
-                                    </button>
+                                    <div class="icon-group">
+                                        <button class="filter-icon" (click)="toggleFilter('user_id')">
+                                            <i
+                                                class="{{ filters.user_id.value ? 'bi bi-funnel-fill' : 'bi bi-funnel' }}"></i>
+                                        </button>
+                                        <button class="sort-icon" (click)="toggleSort('user_id')">
+                                            <i [ngClass]="{
+            'bi bi-arrow-down-up': !filters.user_id.sortDirection,
+            'bi bi-sort-up': filters.user_id.sortDirection === 'asc',
+            'bi bi-sort-down': filters.user_id.sortDirection === 'desc'
+          }"></i>
+                                        </button>
+                                    </div>
                                     <div *ngIf="activeFilter === 'user_id'" class="filter-overlay">
                                         <select [(ngModel)]="tempFilters.user_id.matchMode">
                                             <option value="all">Coincidir todos</option>
@@ -78,12 +84,22 @@
                                         </div>
                                     </div>
                                 </th>
+
                                 <th>
                                     Categoría
-                                    <button class="filter-icon" (click)="toggleFilter('category_id')">
-                                        <i
-                                            class="{{ filters.category_id.value ? 'bi bi-funnel-fill' : 'bi bi-funnel' }}"></i>
-                                    </button>
+                                    <div class="icon-group">
+                                        <button class="filter-icon" (click)="toggleFilter('category_id')">
+                                            <i
+                                                class="{{ filters.category_id.value ? 'bi bi-funnel-fill' : 'bi bi-funnel' }}"></i>
+                                        </button>
+                                        <button class="sort-icon" (click)="toggleSort('category_id')">
+                                            <i [ngClass]="{
+            'bi bi-arrow-down-up': !filters.category_id.sortDirection,
+            'bi bi-sort-up': filters.category_id.sortDirection === 'asc',
+            'bi bi-sort-down': filters.category_id.sortDirection === 'desc'
+          }"></i>
+                                        </button>
+                                    </div>
                                     <div *ngIf="activeFilter === 'category_id'" class="filter-overlay">
                                         <select [(ngModel)]="tempFilters.category_id.matchMode">
                                             <option value="all">Coincidir todos</option>
@@ -104,12 +120,22 @@
                                         </div>
                                     </div>
                                 </th>
+
                                 <th>
                                     Cantidad
-                                    <button class="filter-icon" (click)="toggleFilter('amount')">
-                                        <i
-                                            class="{{ filters.amount.min || filters.amount.max ? 'bi bi-funnel-fill' : 'bi bi-funnel' }}"></i>
-                                    </button>
+                                    <div class="icon-group">
+                                        <button class="filter-icon" (click)="toggleFilter('amount')">
+                                            <i
+                                                class="{{ (filters.amount.min || filters.amount.max) ? 'bi bi-funnel-fill' : 'bi bi-funnel' }}"></i>
+                                        </button>
+                                        <button class="sort-icon" (click)="toggleSort('amount')">
+                                            <i [ngClass]="{
+            'bi bi-arrow-down-up': !filters.amount.sortDirection,
+            'bi bi-sort-up': filters.amount.sortDirection === 'asc',
+            'bi bi-sort-down': filters.amount.sortDirection === 'desc'
+          }"></i>
+                                        </button>
+                                    </div>
                                     <div *ngIf="activeFilter === 'amount'" class="filter-overlay">
                                         <input type="number" [(ngModel)]="tempFilters.amount.min"
                                             placeholder="Mínimo" />
@@ -122,12 +148,22 @@
                                         </div>
                                     </div>
                                 </th>
+
                                 <th>
                                     Descripción
-                                    <button class="filter-icon" (click)="toggleFilter('description')">
-                                        <i
-                                            class="{{ filters.description.value ? 'bi bi-funnel-fill' : 'bi bi-funnel' }}"></i>
-                                    </button>
+                                    <div class="icon-group">
+                                        <button class="filter-icon" (click)="toggleFilter('description')">
+                                            <i
+                                                class="{{ filters.description.value ? 'bi bi-funnel-fill' : 'bi bi-funnel' }}"></i>
+                                        </button>
+                                        <button class="sort-icon" (click)="toggleSort('description')">
+                                            <i [ngClass]="{
+            'bi bi-arrow-down-up': !filters.description.sortDirection,
+            'bi bi-sort-up': filters.description.sortDirection === 'asc',
+            'bi bi-sort-down': filters.description.sortDirection === 'desc'
+          }"></i>
+                                        </button>
+                                    </div>
                                     <div *ngIf="activeFilter === 'description'" class="filter-overlay">
                                         <select [(ngModel)]="tempFilters.description.matchMode">
                                             <option value="all">Coincidir todos</option>
@@ -148,12 +184,22 @@
                                         </div>
                                     </div>
                                 </th>
+
                                 <th>
                                     Fecha
-                                    <button class="filter-icon" (click)="toggleFilter('date')">
-                                        <i
-                                            class="{{ filters.date.start || filters.date.end ? 'bi bi-funnel-fill' : 'bi bi-funnel' }}"></i>
-                                    </button>
+                                    <div class="icon-group">
+                                        <button class="filter-icon" (click)="toggleFilter('date')">
+                                            <i
+                                                class="{{ (filters.date.start || filters.date.end) ? 'bi bi-funnel-fill' : 'bi bi-funnel' }}"></i>
+                                        </button>
+                                        <button class="sort-icon" (click)="toggleSort('date')">
+                                            <i [ngClass]="{
+            'bi bi-arrow-down-up': !filters.date.sortDirection,
+            'bi bi-sort-up': filters.date.sortDirection === 'asc',
+            'bi bi-sort-down': filters.date.sortDirection === 'desc'
+          }"></i>
+                                        </button>
+                                    </div>
                                     <div *ngIf="activeFilter === 'date'" class="filter-overlay">
                                         <input type="date" [(ngModel)]="tempFilters.date.start" placeholder="Desde" />
                                         <input type="date" [(ngModel)]="tempFilters.date.end" placeholder="Hasta" />
@@ -164,11 +210,15 @@
                                         </div>
                                     </div>
                                 </th>
+
                                 <th>Acciones</th>
                             </tr>
                         </thead>
+
+
+
                         <tbody>
-                            <tr *ngFor="let tx of filteredTransactions">
+                            <tr *ngFor="let tx of pagedTransactions">
                                 <td>{{ tx.user_id }}</td>
                                 <td>{{ tx.category_id }}</td>
                                 <td>{{ tx.amount }}</td>
@@ -178,7 +228,7 @@
                                     <button class="icon-button edit-button" (click)="editTransaction(tx)">
                                         <i class="bi bi-pencil-fill"></i>
                                     </button>
-                                    <button class="icon-button delete-button" (click)="handleDeleteClick(transaction)">
+                                    <button class="icon-button delete-button" (click)="handleDeleteClick(tx)">
                                         <i class="bi bi-trash-fill"></i>
                                     </button>
                                 </td>
@@ -188,23 +238,27 @@
                             </tr>
                         </tbody>
                     </table>
+
+                    <app-pagination [totalItems]="filteredTransactions.length" [pageSize]="pageSize"
+                        [currentPage]="currentPage" (pageChange)="currentPage = $event; updatePagedTransactions()"
+                        (pageSizeChange)="pageSize = $event; updatePagedTransactions()"></app-pagination>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de confirmación -->
+        <div class="modal-backdrop" *ngIf="showDeleteModal">
+            <div class="modal">
+                <h3>Confirmar eliminación</h3>
+                <p>
+                    ¿Seguro que deseas eliminar la transacción
+                    <strong>{{ transactionToDelete?.description }}</strong>?
+                </p>
+                <div class="modal-buttons">
+                    <button class="button cancel-button" (click)="closeDeleteModal()">Cancelar</button>
+                    <button class="button delete-button" (click)="confirmDelete()">Eliminar</button>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<!-- Modal de confirmación -->
-<div class="modal-backdrop" *ngIf="showDeleteModal">
-  <div class="modal">
-    <h3>Confirmar eliminación</h3>
-    <p>
-      ¿Seguro que deseas eliminar la transacción 
-      <strong>{{ transactionToDelete?.description }}</strong>?
-    </p>
-
-    <div class="modal-buttons">
-      <button class="button cancel-button" (click)="closeDeleteModal()">Cancelar</button>
-      <button class="button delete-button" (click)="confirmDelete()">Eliminar</button>
-    </div>
-  </div>
 </div>

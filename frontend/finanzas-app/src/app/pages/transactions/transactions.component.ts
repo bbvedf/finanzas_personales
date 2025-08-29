@@ -1,35 +1,54 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { PaginationComponent } from '../../shared/pagination/pagination.component';
 import { TransactionService } from '../../core/services/transaction.service';
 import { Transaction } from '../../core/models/transaction.model';
 
 @Component({
     selector: 'app-transactions',
-    standalone: true,
-    imports: [CommonModule, FormsModule],
     templateUrl: './transactions.component.html',
-    styleUrls: ['./transactions.component.scss']
+    styleUrls: ['./transactions.component.scss'],
+    standalone: true,
+    imports: [CommonModule, FormsModule, PaginationComponent],
+    providers: [TransactionService],
 })
 export class TransactionsComponent implements OnInit {
-    transactions: Transaction[] = [];
-    filteredTransactions: Transaction[] = [];
-    activeFilter: string | null = null;
+    columns = [
+        { key: 'user_id', label: 'Usuario' },
+        { key: 'category_id', label: 'Categoría' },
+        { key: 'amount', label: 'Monto' },
+        { key: 'description', label: 'Descripción' },
+        { key: 'date', label: 'Fecha' },
+    ];
+
     filters: any = {
-        user_id: { value: '', mode: 'contains', matchMode: 'all' },
-        category_id: { value: '', mode: 'contains', matchMode: 'all' },
-        amount: { min: null, max: null },
-        description: { value: '', mode: 'contains', matchMode: 'all' },
-        date: { start: null, end: null }
+        user_id: { value: '', mode: 'contains', matchMode: 'all', sortDirection: null },
+        category_id: { value: '', mode: 'contains', matchMode: 'all', sortDirection: null },
+        amount: { min: null, max: null, sortDirection: null },
+        description: { value: '', mode: 'contains', matchMode: 'all', sortDirection: null },
+        date: { start: '', end: '', sortDirection: null },
     };
     tempFilters: any = null;
+    activeFilter: string | null = null;
 
-    userId = '';
-    categoryId = '';
-    date: string | null = null;
+    transactions: Transaction[] = [];
+    filteredTransactions: Transaction[] = [];
+    pagedTransactions: Transaction[] = [];
+    currentPage = 1;
+    pageSize = 5;
+
+    // formulario
+    userId: string = '';
+    categoryId: string = '';
     amount: number | null = null;
-    description = '';
+    description: string = '';
+    date: string = '';
     currentTransactionId: string | null = null;
+
+    // modal
+    showDeleteModal = false;
+    transactionToDelete: Transaction | null = null;
 
     constructor(private transactionService: TransactionService) { }
 
@@ -38,163 +57,81 @@ export class TransactionsComponent implements OnInit {
     }
 
     loadTransactions(): void {
-        this.transactionService
-            .getTransactionsFiltered({
-                user_id: this.filters.user_id.value || undefined,
-                category_id: this.filters.category_id.value || undefined,
-                start_date: this.filters.date.start || undefined,
-                end_date: this.filters.date.end || undefined
-            })
-            .subscribe(data => {
-                console.log('Transacciones cargadas:', data);
-                this.transactions = data.map(tx => ({
-                    ...tx,
-                    date: tx.date ? tx.date.split('T')[0] : null
-                }));
-                this.filteredTransactions = [...this.transactions];
-                this.applyFilter();
-            });
+        this.transactionService.getTransactions().subscribe((data) => {
+            this.transactions = data;
+            this.filteredTransactions = [...this.transactions];
+            this.applyFilter();
+        });
     }
 
-    submitForm(): void {
-        if (this.currentTransactionId) {
-            this.updateTransaction();
-        } else {
-            this.addTransaction();
-        }
+    // --- FILTROS ---
+    toggleFilter(col: string) {
+        this.activeFilter = col;
+        this.tempFilters = JSON.parse(JSON.stringify(this.filters));
     }
 
-    addTransaction(): void {
-        if (!this.userId || !this.categoryId || this.amount === null) return;
-        this.transactionService
-            .createTransaction({
-                user_id: this.userId,
-                category_id: this.categoryId,
-                amount: this.amount,
-                description: this.description,
-                date: this.date ?? new Date().toISOString().split('T')[0]
-            })
-            .subscribe(() => {
-                this.resetForm();
-                this.loadTransactions();
-            });
-    }
-
-    editTransaction(tx: Transaction): void {
-        this.userId = tx.user_id;
-        this.categoryId = tx.category_id;
-        this.amount = tx.amount;
-        this.description = tx.description ?? '';
-        this.date = tx.date ? new Date(tx.date).toISOString().split('T')[0] : null;
-        this.currentTransactionId = tx.id;
-    }
-
-    updateTransaction(): void {
-        if (!this.currentTransactionId) return;
-        this.transactionService
-            .updateTransaction(this.currentTransactionId, {
-                user_id: this.userId,
-                category_id: this.categoryId,
-                amount: this.amount ?? 0,
-                description: this.description,
-                date: this.date ?? new Date().toISOString().split('T')[0]
-            })
-            .subscribe(() => {
-                this.resetForm();
-                this.loadTransactions();
-            });
-    }
-
-    deleteTransaction(id: string): void {
-        this.transactionService.deleteTransaction(id).subscribe(() => this.loadTransactions());
-    }
-
-    showDeleteModal = false;
-    transactionToDelete: any | null = null; // 👈 si tienes un modelo Transaction, ponlo en vez de any
-
-    handleDeleteClick(transaction: any) {
-        this.transactionToDelete = transaction;
-        this.showDeleteModal = true;
-    }
-
-    confirmDelete(): void {
-        if (this.transactionToDelete) {
-            this.transactionService.deleteTransaction(this.transactionToDelete.id).subscribe(() => {
-                this.loadTransactions();
-                this.closeDeleteModal();
-            });
-        }
-    }
-
-    closeDeleteModal(): void {
-        this.showDeleteModal = false;
-        this.transactionToDelete = null;
-    }
-
-
-    resetForm(): void {
-        this.userId = '';
-        this.categoryId = '';
-        this.amount = null;
-        this.description = '';
-        this.currentTransactionId = null;
-        this.date = null;
-    }
-
-    toggleFilter(field: string): void {
-        if (this.activeFilter === field) {
-            this.cancelFilter();
-        } else {
-            this.activeFilter = field;
-            this.tempFilters = JSON.parse(JSON.stringify(this.filters));
-        }
-    }
-
-    applyFilter(): void {
+    applyFilter() {
         if (this.tempFilters) {
             this.filters = JSON.parse(JSON.stringify(this.tempFilters));
             this.tempFilters = null;
         }
         this.activeFilter = null;
 
-        console.log('Aplicando filtros:', this.filters);
-        this.filteredTransactions = this.transactions.filter(tx => {
-            const userIdMatch = this.applyTextFilter(tx.user_id, this.filters.user_id);
-            const categoryIdMatch = this.applyTextFilter(tx.category_id, this.filters.category_id);
-            const amountMatch = (!this.filters.amount.min || tx.amount >= this.filters.amount.min) &&
-                (!this.filters.amount.max || tx.amount <= this.filters.amount.max);
-            const descriptionMatch = this.applyTextFilter(tx.description, this.filters.description);
+        this.filteredTransactions = this.transactions.filter((tx) => {
+            const userMatch = this.applyTextFilter(tx.user_id?.toString(), this.filters.user_id);
+            const catMatch = this.applyTextFilter(tx.category_id?.toString(), this.filters.category_id);
+            const descMatch = this.applyTextFilter(tx.description, this.filters.description);
+            const amountMatch =
+                (this.filters.amount.min == null || tx.amount >= this.filters.amount.min) &&
+                (this.filters.amount.max == null || tx.amount <= this.filters.amount.max);
             const dateMatch =
-                (!this.filters.date.start ||
-                    (tx.date &&
-                        new Date(tx.date) >= new Date(this.filters.date.start as string))) &&
-                (!this.filters.date.end ||
-                    (tx.date &&
-                        new Date(tx.date) <= new Date(this.filters.date.end as string)));
+                (!this.filters.date.start || (tx.date !== null && tx.date >= this.filters.date.start)) &&
+                (!this.filters.date.end || (tx.date !== null && tx.date <= this.filters.date.end));
 
-            return userIdMatch && categoryIdMatch && amountMatch && descriptionMatch && dateMatch;
+            return userMatch && catMatch && descMatch && amountMatch && dateMatch;
         });
-        console.log('Transacciones filtradas:', this.filteredTransactions);
+
+        this.applySort();
+        this.updatePagedTransactions();
     }
 
     applyTextFilter(value: string | undefined, filter: { value: string; mode: string; matchMode: string }): boolean {
         if (!filter.value || !value) return true;
         const val = value.toLowerCase();
         const filterVal = filter.value.toLowerCase();
-
-        console.log(`Filtrando ${value} con ${filterVal} en modo ${filter.mode}`);
         switch (filter.mode) {
-            case 'contains':
-                return val.includes(filterVal);
-            case 'startsWith':
-                return val.startsWith(filterVal);
-            case 'endsWith':
-                return val.endsWith(filterVal);
-            case 'equals':
-                return val === filterVal;
-            default:
-                return true;
+            case 'contains': return val.includes(filterVal);
+            case 'startsWith': return val.startsWith(filterVal);
+            case 'endsWith': return val.endsWith(filterVal);
+            case 'equals': return val === filterVal;
+            default: return true;
         }
+    }
+
+    filterGlobal(event: Event) {
+        const query = (event.target as HTMLInputElement).value.toLowerCase();
+        this.filteredTransactions = this.transactions.filter(
+            (tx) =>
+                tx.user_id.toString().toLowerCase().includes(query) ||
+                tx.category_id.toString().toLowerCase().includes(query) ||
+                tx.amount.toString().toLowerCase().includes(query) ||
+                (tx.description ?? '').toLowerCase().includes(query)
+        );
+        this.updatePagedTransactions();
+    }
+
+    clearFilters() {
+        this.filters = {
+            user_id: { value: '', mode: 'contains', matchMode: 'all', sortDirection: null },
+            category_id: { value: '', mode: 'contains', matchMode: 'all', sortDirection: null },
+            amount: { min: null, max: null, sortDirection: null },
+            description: { value: '', mode: 'contains', matchMode: 'all', sortDirection: null },
+            date: { start: '', end: '', sortDirection: null },
+        };
+        this.tempFilters = null;
+        this.activeFilter = null;
+        this.filteredTransactions = [...this.transactions];
+        this.updatePagedTransactions();
     }
 
     cancelFilter(): void {
@@ -202,32 +139,90 @@ export class TransactionsComponent implements OnInit {
         this.activeFilter = null;
     }
 
-    filterGlobal(event: Event): void {
-        const input = event.target as HTMLInputElement;
-        const value = input.value.toLowerCase();
-        console.log('Búsqueda global:', value);
-        this.filteredTransactions = this.transactions.filter(tx => {
-            return (
-                (tx.user_id || '').toLowerCase().includes(value) ||
-                (tx.category_id || '').toLowerCase().includes(value) ||
-                (tx.amount?.toString() || '').includes(value) ||
-                (tx.description || '').toLowerCase().includes(value) ||
-                (tx.date || '').toLowerCase().includes(value)
-            );
+    // --- SORT ---
+    toggleSort(col: string) {
+        const current = this.filters[col]?.sortDirection;
+        let newDir: 'asc' | 'desc' | null = null;
+        if (current === 'asc') newDir = 'desc';
+        else if (current === 'desc') newDir = null;
+        else newDir = 'asc';
+        this.filters[col].sortDirection = newDir;
+
+        // reset otros sorts
+        Object.keys(this.filters).forEach(key => {
+            if (key !== col && this.filters[key]?.sortDirection) {
+                this.filters[key].sortDirection = null;
+            }
         });
-        console.log('Resultados búsqueda global:', this.filteredTransactions);
+
+        this.applySort();
     }
 
-    clearFilters(): void {
-        this.filters = {
-            user_id: { value: '', mode: 'contains', matchMode: 'all' },
-            category_id: { value: '', mode: 'contains', matchMode: 'all' },
-            amount: { min: null, max: null },
-            description: { value: '', mode: 'contains', matchMode: 'all' },
-            date: { start: null, end: null }
-        };
-        this.tempFilters = null;
-        this.activeFilter = null;
-        this.loadTransactions();
+    applySort() {
+        const activeCol = Object.keys(this.filters).find(col => this.filters[col]?.sortDirection);
+        if (activeCol) {
+            const dir = this.filters[activeCol].sortDirection;
+            this.filteredTransactions.sort((a, b) => {
+                const aValue = (a as any)[activeCol];
+                const bValue = (b as any)[activeCol];
+                if (aValue < bValue) return dir === 'asc' ? -1 : 1;
+                if (aValue > bValue) return dir === 'asc' ? 1 : -1;
+                return 0;
+            });
+        }
+        this.updatePagedTransactions();
+    }
+
+    // --- PAGINACIÓN ---
+    updatePagedTransactions() {
+        const start = (this.currentPage - 1) * this.pageSize;
+        const end = start + this.pageSize;
+        this.pagedTransactions = this.filteredTransactions.slice(start, end);
+    }
+
+    // --- FORMULARIO ---
+    resetForm() {
+        this.userId = '';
+        this.categoryId = '';
+        this.amount = null;
+        this.description = '';
+        this.date = '';
+        this.currentTransactionId = null;
+    }
+
+    submitForm() {
+        if (this.currentTransactionId) {
+            // update
+        } else {
+            // create
+        }
+        this.resetForm();
+    }
+
+    // --- ACCIONES ---
+    editTransaction(tx: Transaction) {
+        this.currentTransactionId = tx.id;
+        this.userId = tx.user_id;
+        this.categoryId = tx.category_id;
+        this.amount = tx.amount;
+        this.description = tx.description ?? '';
+        this.date = tx.date ?? '';
+    }
+
+    handleDeleteClick(tx: Transaction) {
+        this.transactionToDelete = tx;
+        this.showDeleteModal = true;
+    }
+
+    closeDeleteModal() {
+        this.showDeleteModal = false;
+        this.transactionToDelete = null;
+    }
+
+    confirmDelete() {
+        if (this.transactionToDelete) {
+            // eliminar aquí
+        }
+        this.closeDeleteModal();
     }
 }
