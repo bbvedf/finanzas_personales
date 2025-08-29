@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from app.crud import create_transaction, get_transactions, get_transaction, update_transaction, delete_transaction, transactions_collection
 from app.schemas import TransactionCreate, TransactionOut
-from datetime import datetime
+from datetime import datetime, timezone
 from bson import ObjectId
 
 
@@ -44,16 +44,20 @@ async def list_transactions(
     if start_date or end_date:
         query["date"] = {}
         if start_date:
-            query["date"]["$gte"] = datetime.fromisoformat(start_date)
+            query["date"]["$gte"] = datetime.fromisoformat(start_date).replace(tzinfo=timezone.utc)
         if end_date:
-            query["date"]["$lte"] = datetime.fromisoformat(end_date)
+            query["date"]["$lte"] = datetime.fromisoformat(end_date).replace(tzinfo=timezone.utc)
     
     if query:
         txs = await transactions_collection.find(query).to_list(length=100)
     else:
         txs = await get_transactions()
 
-    return [fix_id(t) for t in txs]
+    return [{
+    **fix_id(t),
+    "date": t["date"].isoformat() if "date" in t else None
+    } for t in txs]
+
 
 @router.put("/{tx_id}", response_model=TransactionOut)
 async def update_transaction_by_id(tx_id: str, tx: TransactionCreate):

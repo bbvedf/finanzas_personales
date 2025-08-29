@@ -1,56 +1,123 @@
-<!-- frontend/finanzas-app/src/app/pages/users/users.component.html -->
 <div class="page-container">
   <h2 class="page-title">Usuarios</h2>
 
   <div class="container">
-    <!-- Formulario en card independiente -->
+    <!-- Formulario -->
     <div class="form-col">
       <div class="card form-card">
         <div class="form-field">
           <label for="username">Username</label>
           <input id="username" [(ngModel)]="username" placeholder="Username">
         </div>
-
         <div class="form-field">
           <label for="email">Email</label>
           <input id="email" [(ngModel)]="email" type="email" placeholder="Email">
         </div>
-
-        <button class="button" (click)="submitForm()">
-          {{ currentUserId ? 'Actualizar' : 'Añadir' }}
-        </button>
+        <div class="form-buttons">
+          <button *ngIf="currentUserId" class="button cancel-button" (click)="resetForm()">Cancelar</button>
+          <button class="button" (click)="submitForm()">
+            {{ currentUserId ? 'Actualizar' : 'Añadir' }}
+          </button>
+        </div>
       </div>
     </div>
 
-    <!-- Tabla en card independiente -->
+    <!-- Tabla -->
     <div class="table-col">
       <div class="table-card">
         <div class="table-wrapper">
+          <!-- Fila superior: Clear Filters y búsqueda global -->
+          <div class="table-caption">
+            <button class="button" (click)="clearFilters()">Quitar filtros</button>
+            <div class="search-container">
+              <input type="text" placeholder="Buscar..." (input)="filterGlobal($event)" />
+            </div>
+          </div>
+
           <table class="table">
             <thead>
               <tr>
-                <th>Username</th>
-                <th>Email</th>
+                <th>
+                  Username
+                  <button class="filter-icon" (click)="toggleFilter('username')">
+                    <i class="{{ filters.username.value ? 'bi bi-funnel-fill' : 'bi bi-funnel' }}"></i>
+                  </button>
+                  <div *ngIf="activeFilter === 'username'" class="filter-overlay">
+                    <select [(ngModel)]="tempFilters.username.matchMode">
+                      <option value="all">Coincidir todos</option>
+                      <option value="any">Coincidir cualquiera</option>
+                    </select>
+                    <select [(ngModel)]="tempFilters.username.mode">
+                      <option value="contains">Contiene</option>
+                      <option value="startsWith">Comienza con</option>
+                      <option value="endsWith">Termina con</option>
+                      <option value="equals">Igual a</option>
+                    </select>
+                    <input type="text" [(ngModel)]="tempFilters.username.value" placeholder="Filtrar username" />
+                    <div class="filter-buttons">
+                      <button class="button cancel-button" (click)="cancelFilter()">Cancelar</button>
+                      <button class="button" (click)="applyFilter()">Aplicar</button>
+                    </div>
+                  </div>
+                </th>
+                <th>
+                  Email
+                  <button class="filter-icon" (click)="toggleFilter('email')">
+                    <i class="{{ filters.email.value ? 'bi bi-funnel-fill' : 'bi bi-funnel' }}"></i>
+                  </button>
+                  <div *ngIf="activeFilter === 'email'" class="filter-overlay">
+                    <select [(ngModel)]="tempFilters.email.matchMode">
+                      <option value="all">Coincidir todos</option>
+                      <option value="any">Coincidir cualquiera</option>
+                    </select>
+                    <select [(ngModel)]="tempFilters.email.mode">
+                      <option value="contains">Contiene</option>
+                      <option value="startsWith">Comienza con</option>
+                      <option value="endsWith">Termina con</option>
+                      <option value="equals">Igual a</option>
+                    </select>
+                    <input type="text" [(ngModel)]="tempFilters.email.value" placeholder="Filtrar email" />
+                    <div class="filter-buttons">
+                      <button class="button cancel-button" (click)="cancelFilter()">Cancelar</button>
+                      <button class="button" (click)="applyFilter()">Aplicar</button>
+                    </div>
+                  </div>
+                </th>
                 <th>Acciones</th>
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let user of users">
+              <tr *ngFor="let user of filteredUsers">
                 <td>{{ user.username }}</td>
                 <td>{{ user.email }}</td>
                 <td>
                   <button class="icon-button edit-button" (click)="editUser(user)">
                     <i class="bi bi-pencil-fill"></i>
                   </button>
-                  <button class="icon-button delete-button" (click)="deleteUser(user.id)">
+                  <button class="icon-button delete-button" (click)="handleDeleteClick(user)">
                     <i class="bi bi-trash-fill"></i>
                   </button>
                 </td>
+              </tr>
+              <tr *ngIf="filteredUsers.length === 0">
+                <td colspan="3">No se encontraron usuarios.</td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+<!-- Modal de confirmación -->
+<div class="modal-backdrop" *ngIf="showDeleteModal">
+  <div class="modal">
+    <h3>Confirmar eliminación</h3>
+    <p>¿Seguro que deseas eliminar al usuario <strong>{{ userToDelete?.username }}</strong>?</p>
+
+    <div class="modal-buttons">
+      <button class="button cancel-button" (click)="closeDeleteModal()">Cancelar</button>
+      <button class="button delete-button" (click)="confirmDelete()">Eliminar</button>
     </div>
   </div>
 </div>

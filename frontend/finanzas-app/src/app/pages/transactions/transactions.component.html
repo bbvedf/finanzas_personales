@@ -27,11 +27,12 @@
                     <input id="date" type="date" [(ngModel)]="date" placeholder="Fecha">
                 </div>
                 <div class="form-buttons">
-                    <button *ngIf="currentTransactionId" class="button cancel-button" (click)="resetForm()">Cancelar</button>
+                    <button *ngIf="currentTransactionId" class="button cancel-button"
+                        (click)="resetForm()">Cancelar</button>
                     <button class="button" (click)="submitForm()">
                         {{ currentTransactionId ? 'Actualizar' : 'Añadir' }}
                     </button>
-                    
+
                 </div>
             </div>
         </div>
@@ -42,7 +43,7 @@
                 <div class="table-wrapper">
                     <!-- Fila superior: Botón Clear Filters y búsqueda global -->
                     <div class="table-caption">
-                        <button class="button" (click)="clearFilters()">Clear Filters</button>
+                        <button class="button" (click)="clearFilters()">Quitar filtros</button>
                         <div class="search-container">
                             <input type="text" placeholder="Buscar..." (input)="filterGlobal($event)" />
                         </div>
@@ -54,22 +55,25 @@
                                 <th>
                                     Usuario
                                     <button class="filter-icon" (click)="toggleFilter('user_id')">
-                                        <i class="{{ filters.user_id.value ? 'bi bi-funnel-fill' : 'bi bi-funnel' }}"></i>
+                                        <i
+                                            class="{{ filters.user_id.value ? 'bi bi-funnel-fill' : 'bi bi-funnel' }}"></i>
                                     </button>
                                     <div *ngIf="activeFilter === 'user_id'" class="filter-overlay">
                                         <select [(ngModel)]="tempFilters.user_id.matchMode">
-                                            <option value="all">Match All</option>
-                                            <option value="any">Match Any</option>
+                                            <option value="all">Coincidir todos</option>
+                                            <option value="any">Coincidir cualquiera</option>
                                         </select>
                                         <select [(ngModel)]="tempFilters.user_id.mode">
-                                            <option value="contains">Contains</option>
-                                            <option value="startsWith">Starts With</option>
-                                            <option value="endsWith">Ends With</option>
-                                            <option value="equals">Equals</option>
+                                            <option value="contains">Contiene</option>
+                                            <option value="startsWith">Comienza con</option>
+                                            <option value="endsWith">Termina con</option>
+                                            <option value="equals">Igual a</option>
                                         </select>
-                                        <input type="text" [(ngModel)]="tempFilters.user_id.value" placeholder="Filtrar usuario" />
+                                        <input type="text" [(ngModel)]="tempFilters.user_id.value"
+                                            placeholder="Filtrar usuario" />
                                         <div class="filter-buttons">
-                                            <button class="button cancel-button" (click)="cancelFilter()">Cancelar</button>
+                                            <button class="button cancel-button"
+                                                (click)="cancelFilter()">Cancelar</button>
                                             <button class="button" (click)="applyFilter()">Aplicar</button>
                                         </div>
                                     </div>
@@ -77,22 +81,25 @@
                                 <th>
                                     Categoría
                                     <button class="filter-icon" (click)="toggleFilter('category_id')">
-                                        <i class="{{ filters.category_id.value ? 'bi bi-funnel-fill' : 'bi bi-funnel' }}"></i>
+                                        <i
+                                            class="{{ filters.category_id.value ? 'bi bi-funnel-fill' : 'bi bi-funnel' }}"></i>
                                     </button>
                                     <div *ngIf="activeFilter === 'category_id'" class="filter-overlay">
                                         <select [(ngModel)]="tempFilters.category_id.matchMode">
-                                            <option value="all">Match All</option>
-                                            <option value="any">Match Any</option>
+                                            <option value="all">Coincidir todos</option>
+                                            <option value="any">Coincidir cualquiera</option>
                                         </select>
                                         <select [(ngModel)]="tempFilters.category_id.mode">
-                                            <option value="contains">Contains</option>
-                                            <option value="startsWith">Starts With</option>
-                                            <option value="endsWith">Ends With</option>
-                                            <option value="equals">Equals</option>
+                                            <option value="contains">Contiene</option>
+                                            <option value="startsWith">Comienza con</option>
+                                            <option value="endsWith">Termina con</option>
+                                            <option value="equals">Igual a</option>
                                         </select>
-                                        <input type="text" [(ngModel)]="tempFilters.category_id.value" placeholder="Filtrar categoría" />
+                                        <input type="text" [(ngModel)]="tempFilters.category_id.value"
+                                            placeholder="Filtrar categoría" />
                                         <div class="filter-buttons">
-                                            <button class="button cancel-button" (click)="cancelFilter()">Cancelar</button>
+                                            <button class="button cancel-button"
+                                                (click)="cancelFilter()">Cancelar</button>
                                             <button class="button" (click)="applyFilter()">Aplicar</button>
                                         </div>
                                     </div>
@@ -100,13 +107,17 @@
                                 <th>
                                     Cantidad
                                     <button class="filter-icon" (click)="toggleFilter('amount')">
-                                        <i class="{{ filters.amount.min || filters.amount.max ? 'bi bi-funnel-fill' : 'bi bi-funnel' }}"></i>
+                                        <i
+                                            class="{{ filters.amount.min || filters.amount.max ? 'bi bi-funnel-fill' : 'bi bi-funnel' }}"></i>
                                     </button>
                                     <div *ngIf="activeFilter === 'amount'" class="filter-overlay">
-                                        <input type="number" [(ngModel)]="tempFilters.amount.min" placeholder="Mínimo" />
-                                        <input type="number" [(ngModel)]="tempFilters.amount.max" placeholder="Máximo" />
+                                        <input type="number" [(ngModel)]="tempFilters.amount.min"
+                                            placeholder="Mínimo" />
+                                        <input type="number" [(ngModel)]="tempFilters.amount.max"
+                                            placeholder="Máximo" />
                                         <div class="filter-buttons">
-                                            <button class="button cancel-button" (click)="cancelFilter()">Cancelar</button>
+                                            <button class="button cancel-button"
+                                                (click)="cancelFilter()">Cancelar</button>
                                             <button class="button" (click)="applyFilter()">Aplicar</button>
                                         </div>
                                     </div>
@@ -114,22 +125,25 @@
                                 <th>
                                     Descripción
                                     <button class="filter-icon" (click)="toggleFilter('description')">
-                                        <i class="{{ filters.description.value ? 'bi bi-funnel-fill' : 'bi bi-funnel' }}"></i>
+                                        <i
+                                            class="{{ filters.description.value ? 'bi bi-funnel-fill' : 'bi bi-funnel' }}"></i>
                                     </button>
                                     <div *ngIf="activeFilter === 'description'" class="filter-overlay">
                                         <select [(ngModel)]="tempFilters.description.matchMode">
-                                            <option value="all">Match All</option>
-                                            <option value="any">Match Any</option>
+                                            <option value="all">Coincidir todos</option>
+                                            <option value="any">Coincidir cualquiera</option>
                                         </select>
                                         <select [(ngModel)]="tempFilters.description.mode">
-                                            <option value="contains">Contains</option>
-                                            <option value="startsWith">Starts With</option>
-                                            <option value="endsWith">Ends With</option>
-                                            <option value="equals">Equals</option>
+                                            <option value="contains">Contiene</option>
+                                            <option value="startsWith">Comienza con</option>
+                                            <option value="endsWith">Termina con</option>
+                                            <option value="equals">Igual a</option>
                                         </select>
-                                        <input type="text" [(ngModel)]="tempFilters.description.value" placeholder="Filtrar descripción" />
+                                        <input type="text" [(ngModel)]="tempFilters.description.value"
+                                            placeholder="Filtrar descripción" />
                                         <div class="filter-buttons">
-                                            <button class="button cancel-button" (click)="cancelFilter()">Cancelar</button>
+                                            <button class="button cancel-button"
+                                                (click)="cancelFilter()">Cancelar</button>
                                             <button class="button" (click)="applyFilter()">Aplicar</button>
                                         </div>
                                     </div>
@@ -137,13 +151,15 @@
                                 <th>
                                     Fecha
                                     <button class="filter-icon" (click)="toggleFilter('date')">
-                                        <i class="{{ filters.date.start || filters.date.end ? 'bi bi-funnel-fill' : 'bi bi-funnel' }}"></i>
+                                        <i
+                                            class="{{ filters.date.start || filters.date.end ? 'bi bi-funnel-fill' : 'bi bi-funnel' }}"></i>
                                     </button>
                                     <div *ngIf="activeFilter === 'date'" class="filter-overlay">
                                         <input type="date" [(ngModel)]="tempFilters.date.start" placeholder="Desde" />
                                         <input type="date" [(ngModel)]="tempFilters.date.end" placeholder="Hasta" />
                                         <div class="filter-buttons">
-                                            <button class="button cancel-button" (click)="cancelFilter()">Cancelar</button>
+                                            <button class="button cancel-button"
+                                                (click)="cancelFilter()">Cancelar</button>
                                             <button class="button" (click)="applyFilter()">Aplicar</button>
                                         </div>
                                     </div>
@@ -162,13 +178,13 @@
                                     <button class="icon-button edit-button" (click)="editTransaction(tx)">
                                         <i class="bi bi-pencil-fill"></i>
                                     </button>
-                                    <button class="icon-button delete-button" (click)="deleteTransaction(tx.id)">
+                                    <button class="icon-button delete-button" (click)="handleDeleteClick(transaction)">
                                         <i class="bi bi-trash-fill"></i>
                                     </button>
                                 </td>
                             </tr>
                             <tr *ngIf="filteredTransactions.length === 0">
-                                <td colspan="6">No transactions found.</td>
+                                <td colspan="6">No se encontraron transacciones.</td>
                             </tr>
                         </tbody>
                     </table>
@@ -176,4 +192,19 @@
             </div>
         </div>
     </div>
+</div>
+<!-- Modal de confirmación -->
+<div class="modal-backdrop" *ngIf="showDeleteModal">
+  <div class="modal">
+    <h3>Confirmar eliminación</h3>
+    <p>
+      ¿Seguro que deseas eliminar la transacción 
+      <strong>{{ transactionToDelete?.description }}</strong>?
+    </p>
+
+    <div class="modal-buttons">
+      <button class="button cancel-button" (click)="closeDeleteModal()">Cancelar</button>
+      <button class="button delete-button" (click)="confirmDelete()">Eliminar</button>
+    </div>
+  </div>
 </div>
