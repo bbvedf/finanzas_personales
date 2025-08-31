@@ -26,7 +26,6 @@
     <div class="table-col">
       <div class="table-card">
         <div class="table-wrapper">
-          <!-- Fila superior: Clear Filters y búsqueda global -->
           <div class="table-caption">
             <button class="button" (click)="clearFilters()">Quitar filtros</button>
             <div class="search-container">
@@ -39,55 +38,23 @@
               <tr>
                 <th>
                   Username
-                  <button class="filter-icon" (click)="toggleFilter('username')">
-                    <i class="{{ filters.username.value ? 'bi bi-funnel-fill' : 'bi bi-funnel' }}"></i>
-                  </button>
+                  <ng-container *ngTemplateOutlet="iconGroup; context: { field: 'username' }"></ng-container>
                   <div *ngIf="activeFilter === 'username'" class="filter-overlay">
-                    <select [(ngModel)]="tempFilters.username.matchMode">
-                      <option value="all">Coincidir todos</option>
-                      <option value="any">Coincidir cualquiera</option>
-                    </select>
-                    <select [(ngModel)]="tempFilters.username.mode">
-                      <option value="contains">Contiene</option>
-                      <option value="startsWith">Comienza con</option>
-                      <option value="endsWith">Termina con</option>
-                      <option value="equals">Igual a</option>
-                    </select>
-                    <input type="text" [(ngModel)]="tempFilters.username.value" placeholder="Filtrar username" />
-                    <div class="filter-buttons">
-                      <button class="button cancel-button" (click)="cancelFilter()">Cancelar</button>
-                      <button class="button" (click)="applyFilter()">Aplicar</button>
-                    </div>
+                    <ng-container *ngTemplateOutlet="textFilter; context: { field: 'username', placeholder: 'Filtrar username' }"></ng-container>
                   </div>
                 </th>
                 <th>
                   Email
-                  <button class="filter-icon" (click)="toggleFilter('email')">
-                    <i class="{{ filters.email.value ? 'bi bi-funnel-fill' : 'bi bi-funnel' }}"></i>
-                  </button>
+                  <ng-container *ngTemplateOutlet="iconGroup; context: { field: 'email' }"></ng-container>
                   <div *ngIf="activeFilter === 'email'" class="filter-overlay">
-                    <select [(ngModel)]="tempFilters.email.matchMode">
-                      <option value="all">Coincidir todos</option>
-                      <option value="any">Coincidir cualquiera</option>
-                    </select>
-                    <select [(ngModel)]="tempFilters.email.mode">
-                      <option value="contains">Contiene</option>
-                      <option value="startsWith">Comienza con</option>
-                      <option value="endsWith">Termina con</option>
-                      <option value="equals">Igual a</option>
-                    </select>
-                    <input type="text" [(ngModel)]="tempFilters.email.value" placeholder="Filtrar email" />
-                    <div class="filter-buttons">
-                      <button class="button cancel-button" (click)="cancelFilter()">Cancelar</button>
-                      <button class="button" (click)="applyFilter()">Aplicar</button>
-                    </div>
+                    <ng-container *ngTemplateOutlet="textFilter; context: { field: 'email', placeholder: 'Filtrar email' }"></ng-container>
                   </div>
                 </th>
                 <th>Acciones</th>
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let user of filteredUsers">
+              <tr *ngFor="let user of pagedUsers">
                 <td>{{ user.username }}</td>
                 <td>{{ user.email }}</td>
                 <td>
@@ -104,11 +71,20 @@
               </tr>
             </tbody>
           </table>
+
+          <app-pagination
+            [totalItems]="filteredUsers.length"
+            [pageSize]="pageSize"
+            [currentPage]="currentPage"
+            (pageChange)="currentPage = $event; updatePagedUsers()"
+            (pageSizeChange)="pageSize = $event; currentPage = 1; updatePagedUsers()"
+          ></app-pagination>
         </div>
       </div>
     </div>
   </div>
 </div>
+
 <!-- Modal de confirmación -->
 <div class="modal-backdrop" *ngIf="showDeleteModal">
   <div class="modal">
@@ -121,3 +97,41 @@
     </div>
   </div>
 </div>
+
+<!-- Templates reutilizables -->
+<ng-template #iconGroup let-field="field">
+  <div class="icon-group">
+    <button class="filter-icon" (click)="toggleFilter(field)">
+      <i class="{{ filters[field].value ? 'bi bi-funnel-fill' : 'bi bi-funnel' }}"></i>
+    </button>
+    <button class="sort-icon" (click)="toggleSort(field)">
+      <i [ngClass]="{
+        'bi bi-arrow-down-up': !filters[field].sortDirection,
+        'bi bi-sort-up': filters[field].sortDirection === 'asc',
+        'bi bi-sort-down': filters[field].sortDirection === 'desc'
+      }"></i>
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #textFilter let-field="field" let-placeholder="placeholder">
+  <select [(ngModel)]="tempFilters[field].matchMode">
+    <option value="all">Coincidir todos</option>
+    <option value="any">Coincidir cualquiera</option>
+  </select>
+  <select [(ngModel)]="tempFilters[field].mode">
+    <option value="contains">Contiene</option>
+    <option value="startsWith">Comienza con</option>
+    <option value="endsWith">Termina con</option>
+    <option value="equals">Igual a</option>
+  </select>
+  <input type="text" [(ngModel)]="tempFilters[field].value" [placeholder]="placeholder" />
+  <ng-container *ngTemplateOutlet="filterButtons"></ng-container>
+</ng-template>
+
+<ng-template #filterButtons>
+  <div class="filter-buttons">
+    <button class="button cancel-button" (click)="cancelFilter()">Cancelar</button>
+    <button class="button" (click)="applyFilter()">Aplicar</button>
+  </div>
+</ng-template>
