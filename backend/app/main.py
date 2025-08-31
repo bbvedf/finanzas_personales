@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.api import users, categories, transactions
+from app.api import users, categories, transactions, stats
 from app.config import settings
 from motor.motor_asyncio import AsyncIOMotorClient
 from fastapi.middleware.cors import CORSMiddleware
@@ -36,6 +36,7 @@ async def shutdown_db_client():
 app.include_router(users.router)
 app.include_router(categories.router)
 app.include_router(transactions.router)
+app.include_router(stats.router)
 
 # Endpoint de prueba
 @app.get("/test")

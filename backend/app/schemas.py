@@ -39,3 +39,17 @@ class TransactionOut(BaseModel):
     description: Optional[str] = None
     date: datetime
 
+
+# Estadísticas
+class StatsByUser(BaseModel):
+    user_id: str
+    total: float
+
+class StatsByCategory(BaseModel):
+    category_id: str
+    total: float
+
+class StatsOverTime(BaseModel):
+    year: int
+    month: int
+    total: float
