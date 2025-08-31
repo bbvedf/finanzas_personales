@@ -1,4 +1,3 @@
-/* frontend/finanzas-app/src/app/pages/transactions/transactions.component.scss */
 :host {
   display: block;
 }
@@ -204,26 +203,22 @@
   }
 }
 
-.filter-icon {
+/* IconGroup + sort */
+.icon-group {
+  display: inline-flex;
+  gap: 4px;
+  float: right;
+}
+
+.icon-group .filter-icon,
+.icon-group .sort-icon {
+  margin: 0;
+  padding: 2px;
+  font-size: 1rem;
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 1rem;
   color: var(--color-text);
-  margin-left: 5px;
-  transition: color 0.2s;
-
-  &:hover {
-    color: var(--color-link);
-  }
-
-  .fa-light {
-    font-weight: 300;
-  }
-
-  .fa-solid {
-    font-weight: 900;
-  }
 }
 
 .filter-overlay {

@@ -1,120 +1,93 @@
 <div class="page-container">
-    <h2 class="page-title">Categorías</h2>
+  <h2 class="page-title">Categorías</h2>
 
-    <div class="container">
-        <!-- Formulario -->
-        <div class="form-col">
-            <div class="card form-card">
-                <div class="form-field">
-                    <label for="name">Nombre</label>
-                    <input id="name" [(ngModel)]="name" placeholder="Nombre">
-                </div>
-                <div class="form-field">
-                    <label for="description">Descripción</label>
-                    <input id="description" [(ngModel)]="description" placeholder="Descripción">
-                </div>
-                <div class="form-buttons">
-                    <button *ngIf="currentCategoryId" class="button cancel-button"
-                        (click)="resetForm()">Cancelar</button>
-                    <button class="button" (click)="submitForm()">
-                        {{ currentCategoryId ? 'Actualizar' : 'Añadir' }}
-                    </button>
-                </div>
-            </div>
+  <div class="container">
+    <!-- Formulario -->
+    <div class="form-col">
+      <div class="card form-card">
+        <div class="form-field">
+          <label for="name">Nombre</label>
+          <input id="name" [(ngModel)]="name" placeholder="Nombre" />
         </div>
-
-        <!-- Tabla -->
-        <div class="table-col">
-            <div class="table-card">
-                <div class="table-wrapper">
-                    <!-- Fila superior: Botón Clear Filters y búsqueda global -->
-                    <div class="table-caption">
-                        <button class="button" (click)="clearFilters()">Quitar filtros</button>
-                        <div class="search-container">
-                            <input type="text" placeholder="Buscar..." (input)="filterGlobal($event)" />
-                        </div>
-                    </div>
-
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>
-                                    Nombre
-                                    <button class="filter-icon" (click)="toggleFilter('name')">
-                                        <i class="{{ filters.name.value ? 'bi bi-funnel-fill' : 'bi bi-funnel' }}"></i>
-                                    </button>
-                                    <div *ngIf="activeFilter === 'name'" class="filter-overlay">
-                                        <select [(ngModel)]="tempFilters.name.matchMode">
-                                            <option value="all">Coincidir todos</option>
-                                            <option value="any">Coincidir cualquiera</option>
-                                        </select>
-                                        <select [(ngModel)]="tempFilters.name.mode">
-                                            <option value="contains">Contiene</option>
-                                            <option value="startsWith">Comienza con</option>
-                                            <option value="endsWith">Termina con</option>
-                                            <option value="equals">Igual a</option>
-                                        </select>
-                                        <input type="text" [(ngModel)]="tempFilters.name.value"
-                                            placeholder="Filtrar nombre" />
-                                        <div class="filter-buttons">
-                                            <button class="button cancel-button"
-                                                (click)="cancelFilter()">Cancelar</button>
-                                            <button class="button" (click)="applyFilter()">Aplicar</button>
-                                        </div>
-                                    </div>
-                                </th>
-                                <th>
-                                    Descripción
-                                    <button class="filter-icon" (click)="toggleFilter('description')">
-                                        <i
-                                            class="{{ filters.description.value ? 'bi bi-funnel-fill' : 'bi bi-funnel' }}"></i>
-                                    </button>
-                                    <div *ngIf="activeFilter === 'description'" class="filter-overlay">
-                                        <select [(ngModel)]="tempFilters.description.matchMode">
-                                            <option value="all">Coincidir todos</option>
-                                            <option value="any">Coincidir cualquiera</option>
-                                        </select>
-                                        <select [(ngModel)]="tempFilters.description.mode">
-                                            <option value="contains">Contiene</option>
-                                            <option value="startsWith">Comienza con</option>
-                                            <option value="endsWith">Termina con</option>
-                                            <option value="equals">Igual a</option>
-                                        </select>
-                                        <input type="text" [(ngModel)]="tempFilters.description.value"
-                                            placeholder="Filtrar descripción" />
-                                        <div class="filter-buttons">
-                                            <button class="button cancel-button"
-                                                (click)="cancelFilter()">Cancelar</button>
-                                            <button class="button" (click)="applyFilter()">Aplicar</button>
-                                        </div>
-                                    </div>
-                                </th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let category of filteredCategories">
-                                <td>{{ category.name }}</td>
-                                <td>{{ category.description }}</td>
-                                <td>
-                                    <button class="icon-button edit-button" (click)="editCategory(category)">
-                                        <i class="bi bi-pencil-fill"></i>
-                                    </button>
-                                    <button class="icon-button delete-button" (click)="handleDeleteClick(category)">
-                                        <i class="bi bi-trash-fill"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr *ngIf="filteredCategories.length === 0">
-                                <td colspan="3">No se encontraron categorías.</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+        <div class="form-field">
+          <label for="description">Descripción</label>
+          <input id="description" [(ngModel)]="description" placeholder="Descripción" />
         </div>
+        <div class="form-buttons">
+          <button *ngIf="currentCategoryId" class="button cancel-button" (click)="resetForm()">Cancelar</button>
+          <button class="button" (click)="submitForm()">
+            {{ currentCategoryId ? 'Actualizar' : 'Añadir' }}
+          </button>
+        </div>
+      </div>
     </div>
+
+    <!-- Tabla -->
+    <div class="table-col">
+      <div class="table-card">
+        <div class="table-wrapper">
+          <div class="table-caption">
+            <button class="button" (click)="clearFilters()">Quitar filtros</button>
+            <div class="search-container">
+              <input type="text" placeholder="Buscar..." (input)="filterGlobal($event)" />
+            </div>
+          </div>
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th>
+                  Nombre
+                  <ng-container *ngTemplateOutlet="iconGroup; context: { field: 'name' }"></ng-container>
+                  <div *ngIf="activeFilter === 'name'" class="filter-overlay">
+                    <ng-container *ngTemplateOutlet="textFilter; context: { field: 'name', placeholder: 'Filtrar nombre' }"></ng-container>
+                  </div>
+                </th>
+
+                <th>
+                  Descripción
+                  <ng-container *ngTemplateOutlet="iconGroup; context: { field: 'description' }"></ng-container>
+                  <div *ngIf="activeFilter === 'description'" class="filter-overlay">
+                    <ng-container *ngTemplateOutlet="textFilter; context: { field: 'description', placeholder: 'Filtrar descripción' }"></ng-container>
+                  </div>
+                </th>
+
+                <th>Acciones</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let category of pagedCategories">
+                <td>{{ category.name }}</td>
+                <td>{{ category.description }}</td>
+                <td>
+                  <button class="icon-button edit-button" (click)="editCategory(category)">
+                    <i class="bi bi-pencil-fill"></i>
+                  </button>
+                  <button class="icon-button delete-button" (click)="handleDeleteClick(category)">
+                    <i class="bi bi-trash-fill"></i>
+                  </button>
+                </td>
+              </tr>
+              <tr *ngIf="filteredCategories.length === 0">
+                <td colspan="3">No se encontraron categorías.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <app-pagination
+            [totalItems]="filteredCategories.length"
+            [pageSize]="pageSize"
+            [currentPage]="currentPage"
+            (pageChange)="currentPage = $event; updatePagedCategories()"
+            (pageSizeChange)="pageSize = $event; currentPage = 1; updatePagedCategories()"
+          ></app-pagination>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
 <!-- Modal de confirmación -->
 <div class="modal-backdrop" *ngIf="showDeleteModal">
   <div class="modal">
@@ -127,3 +100,41 @@
     </div>
   </div>
 </div>
+
+<!-- Templates reutilizables -->
+<ng-template #iconGroup let-field="field">
+  <div class="icon-group">
+    <button class="filter-icon" (click)="toggleFilter(field)">
+      <i class="{{ filters[field].value ? 'bi bi-funnel-fill' : 'bi bi-funnel' }}"></i>
+    </button>
+    <button class="sort-icon" (click)="toggleSort(field)">
+      <i [ngClass]="{
+        'bi bi-arrow-down-up': !filters[field].sortDirection,
+        'bi bi-sort-up': filters[field].sortDirection === 'asc',
+        'bi bi-sort-down': filters[field].sortDirection === 'desc'
+      }"></i>
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #textFilter let-field="field" let-placeholder="placeholder">
+  <select [(ngModel)]="tempFilters[field].matchMode">
+    <option value="all">Coincidir todos</option>
+    <option value="any">Coincidir cualquiera</option>
+  </select>
+  <select [(ngModel)]="tempFilters[field].mode">
+    <option value="contains">Contiene</option>
+    <option value="startsWith">Comienza con</option>
+    <option value="endsWith">Termina con</option>
+    <option value="equals">Igual a</option>
+  </select>
+  <input type="text" [(ngModel)]="tempFilters[field].value" [placeholder]="placeholder" />
+  <ng-container *ngTemplateOutlet="filterButtons"></ng-container>
+</ng-template>
+
+<ng-template #filterButtons>
+  <div class="filter-buttons">
+    <button class="button cancel-button" (click)="cancelFilter()">Cancelar</button>
+    <button class="button" (click)="applyFilter()">Aplicar</button>
+  </div>
+</ng-template>
