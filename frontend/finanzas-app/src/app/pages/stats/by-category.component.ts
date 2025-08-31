@@ -23,12 +23,12 @@ export class ByCategoryComponent implements OnInit {
 
     ngOnInit(): void {
         this.statsService.getByCategory().subscribe(data => {
-            //console.log('bycategory data', data);
+            console.log('bycategory data', data);
             this.chartData = {
-                labels: data.map(d => d.category_id),
+                labels: data.map(d => d.category_name),
                 datasets: [
                     {
-                        label: 'Total por usuario',
+                        label: 'Total por categoría',
                         data: data.map(d => d.total)
                     }
                 ]

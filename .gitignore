@@ -3,4 +3,4 @@ venv/
 __pycache__/
 *.pyc
 mongo-data/
-
+reset_db_full.js

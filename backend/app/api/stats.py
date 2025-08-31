@@ -12,27 +12,84 @@ def fix_id(doc):
 # --- Endpoints ---
 @router.get("/by-user", response_model=list[StatsByUser])
 async def stats_by_user():
-    from app.main import app  # Tomar la conexión Mongo ya definida
+    from app.main import app
     db = app.mongodb
+
     pipeline = [
-        {"$group": {"_id": "$user_id", "total": {"$sum": "$amount"}}}
+        {"$group": {"_id": "$user_id", "total": {"$sum": "$amount"}}},
+        {
+            "$lookup": {
+                "from": "users",
+                "localField": "_id",
+                "foreignField": "_id",
+                "as": "user"
+            }
+        },
+        {"$unwind": "$user"},
+        {
+            "$project": {
+                "user_id": {"$toString": "$_id"},  # mantener el schema
+                "username": "$user.username",
+                "total": 1
+            }
+        }
     ]
+
     result = await db.transactions.aggregate(pipeline).to_list(length=None)
+    print("Stats by user result:", result)
     if not result:
         raise HTTPException(status_code=404, detail="No stats found")
-    return [{"user_id": r["_id"], "total": r["total"]} for r in result]
+
+    return [
+        {"user_id": r["user_id"], "username": r["username"], "total": r["total"]}
+        for r in result
+    ]
 
 @router.get("/by-category", response_model=list[StatsByCategory])
 async def stats_by_category():
     from app.main import app
     db = app.mongodb
     pipeline = [
-        {"$group": {"_id": "$category_id", "total": {"$sum": "$amount"}}}
-    ]
+    {
+        "$addFields": {
+            "category_id_obj": {"$toObjectId": "$category_id"}  # convierte string a ObjectId
+        }
+    },
+    {
+        "$group": {
+            "_id": "$category_id_obj",
+            "total": {"$sum": "$amount"}
+        }
+    },
+    {
+        "$lookup": {
+            "from": "categories",
+            "localField": "_id",
+            "foreignField": "_id",
+            "as": "category"
+        }
+    },
+    {"$unwind": "$category"},
+    {
+        "$project": {
+            "category_id": "$_id",
+            "category_name": "$category.name",
+            "total": 1
+        }
+    }
+]
     result = await db.transactions.aggregate(pipeline).to_list(length=None)
     if not result:
         raise HTTPException(status_code=404, detail="No stats found")
-    return [{"category_id": r["_id"], "total": r["total"]} for r in result]
+    
+    return [
+        {
+            "category_id": str(r["category_id"]),
+            "category_name": r["category_name"],
+            "total": r["total"]
+        }
+        for r in result
+    ]
 
 @router.get("/over-time", response_model=list[StatsOverTime])
 async def stats_over_time(start: str = None, end: str = None):

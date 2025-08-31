@@ -23,9 +23,9 @@ export class ByUserComponent implements OnInit {
 
     ngOnInit(): void {
         this.statsService.getByUser().subscribe(data => {
-            //console.log('byUser data', data);
+            console.log('byUser data', data);
             this.chartData = {
-                labels: data.map(d => d.user_id),
+                labels: data.map(d => d.username),
                 datasets: [
                     {
                         label: 'Total por usuario',

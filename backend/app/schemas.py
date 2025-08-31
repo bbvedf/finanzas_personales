@@ -43,10 +43,12 @@ class TransactionOut(BaseModel):
 # Estadísticas
 class StatsByUser(BaseModel):
     user_id: str
+    username: str
     total: float
 
 class StatsByCategory(BaseModel):
     category_id: str
+    category_name: str
     total: float
 
 class StatsOverTime(BaseModel):
