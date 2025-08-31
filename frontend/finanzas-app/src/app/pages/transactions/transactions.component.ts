@@ -92,6 +92,7 @@ export class TransactionsComponent implements OnInit {
         });
 
         this.applySort();
+        this.currentPage = 1; // 🔹 reiniciar página
         this.updatePagedTransactions();
     }
 
@@ -117,6 +118,7 @@ export class TransactionsComponent implements OnInit {
                 tx.amount.toString().toLowerCase().includes(query) ||
                 (tx.description ?? '').toLowerCase().includes(query)
         );
+        this.currentPage = 1; // 🔹 reiniciar página
         this.updatePagedTransactions();
     }
 
@@ -131,6 +133,7 @@ export class TransactionsComponent implements OnInit {
         this.tempFilters = null;
         this.activeFilter = null;
         this.filteredTransactions = [...this.transactions];
+        this.currentPage = 1; // 🔹 reiniciar página
         this.updatePagedTransactions();
     }
 
@@ -170,6 +173,7 @@ export class TransactionsComponent implements OnInit {
                 return 0;
             });
         }
+        this.currentPage = 1; // 🔹 reiniciar página
         this.updatePagedTransactions();
     }
 

@@ -3,7 +3,6 @@ import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-
 @Component({
   selector: 'app-pagination',
   templateUrl: './pagination.component.html',
@@ -38,7 +37,9 @@ export class PaginationComponent implements OnChanges {
 
   changePageSize(size: number) {
     this.pageSize = size;
+    this.currentPage = 1; // 👈 reseteamos a la primera página
     this.pageSizeChange.emit(this.pageSize);
+    this.pageChange.emit(this.currentPage); // 👈 avisamos también del cambio de página
     this.updateTotalPages();
   }
 
