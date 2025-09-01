@@ -5,4 +5,6 @@ export interface Transaction {
   amount: number;
   description?: string;
   date: string | null;
+  username: string;
+  category_name: string;
 }

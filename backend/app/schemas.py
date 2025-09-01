@@ -28,13 +28,14 @@ class TransactionCreate(BaseModel):
     category_id: str
     amount: float
     description: str | None = None
-    date: datetime = Field(default_factory=datetime.utcnow)
-
+    date: datetime
 
 class TransactionOut(BaseModel):
     id: str
     user_id: str
     category_id: str
+    username: str
+    category_name: str
     amount: float
     description: Optional[str] = None
     date: datetime
