@@ -8,11 +8,11 @@ import { OverTimeComponent } from './over-time.component';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-stats',
-  standalone: true,
-  imports: [CommonModule, ByCategoryComponent, ByUserComponent, OverTimeComponent],
-  templateUrl: './stats.component.html',
-  styleUrls: ['./stats.component.scss']
+    selector: 'app-stats',
+    standalone: true,
+    imports: [CommonModule, ByCategoryComponent, ByUserComponent, OverTimeComponent],
+    templateUrl: './stats.component.html',
+    styleUrls: ['./stats.component.scss']
 })
 export class StatsComponent implements OnInit, OnDestroy {
     currentTheme: 'light' | 'dark' = 'light';
@@ -27,6 +27,7 @@ export class StatsComponent implements OnInit, OnDestroy {
         // Suscribirse a los cambios de tema
         this.themeSubscription = this.themeService.theme$.subscribe((theme: string) => {
             this.currentTheme = theme as 'light' | 'dark';
+            console.log('StatsComponent sees theme:', this.currentTheme);
         });
     }
 

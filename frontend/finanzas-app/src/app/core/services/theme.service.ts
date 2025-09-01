@@ -10,11 +10,13 @@ export class ThemeService {
   theme$ = this.themeSubject.asObservable();
 
   constructor() {
+    console.log('ThemeService instance created');  // <--- prueba
     const savedTheme = localStorage.getItem('theme') || 'light';
     this.setTheme(savedTheme);
   }
 
   setTheme(theme: string) {
+    console.log('ThemeService.setTheme called with', theme);  // <--- prueba
     this.themeSubject.next(theme);
     document.body.classList.remove('theme-light', 'theme-dark');
     document.body.classList.add(`theme-${theme}`);

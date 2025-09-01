@@ -29,6 +29,7 @@ export class NavbarComponent {
   }
 
   setTheme(theme: string) {
+    console.log('NavbarComponent calls setTheme with', theme);  // <--- prueba
     this.themeService.setTheme(theme);
     this.closeMenu();
   }
