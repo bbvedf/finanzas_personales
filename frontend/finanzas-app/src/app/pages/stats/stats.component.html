@@ -1,9 +1,18 @@
 <div class="stats-page">
-  <h2>Estadísticas</h2>
+    <h2>Estadísticas</h2>
 
-  <div class="charts-grid">
-    <app-by-category></app-by-category>
-    <app-by-user></app-by-user>
-    <app-over-time></app-over-time>
-  </div>
+    <div class="charts-grid">
+        <div class="stats-tabs">
+            <button (click)="navigateTo('by-category')">By Category</button>
+            <app-by-category [showBackButton]="false" [currentTheme]="currentTheme"></app-by-category>
+        </div>
+        <div class="stats-tabs">
+            <button (click)="navigateTo('by-user')">By User</button>
+            <app-by-user [showBackButton]="false" [currentTheme]="currentTheme"></app-by-user>           
+        </div>
+        <div class="stats-tabs">
+            <button (click)="navigateTo('over-time')">Over Time</button>
+            <app-over-time [showBackButton]="false" [currentTheme]="currentTheme"></app-over-time>
+        </div>
+    </div>
 </div>

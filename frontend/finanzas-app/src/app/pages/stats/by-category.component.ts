@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { StatsService } from '../../core/services/stats.service';
 import { ChartData, ChartOptions } from 'chart.js';
 import { NgChartsModule } from 'ng2-charts';
+
 
 @Component({
     selector: 'app-by-category',
@@ -12,6 +14,8 @@ import { NgChartsModule } from 'ng2-charts';
     styleUrls: ['./by-category.component.scss']
 })
 export class ByCategoryComponent implements OnInit {
+    @Input() showBackButton: boolean = true; // control del botón
+
     chartData: ChartData<'bar'> = {
         labels: [],
         datasets: [{ label: 'Total por categoría', data: [] }]
@@ -19,7 +23,14 @@ export class ByCategoryComponent implements OnInit {
     chartOptions: ChartOptions<'bar'> = { responsive: true };
     chartType: 'bar' = 'bar';
 
-    constructor(private statsService: StatsService) { }
+    constructor(
+        private statsService: StatsService,
+        private router: Router
+    ) { }
+
+    goBack() {
+        this.router.navigate(['/stats']);
+    }
 
     ngOnInit(): void {
         this.statsService.getByCategory().subscribe(data => {

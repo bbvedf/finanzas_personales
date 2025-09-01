@@ -21,6 +21,9 @@
     <button class="menu-item" (click)="navigateTo('/transactions')">
       <i class="bi bi-arrow-left-right"></i> Transactions
     </button>
+    <button class="menu-item" (click)="navigateTo('/stats')">
+      <i class="bi bi-bar-chart-fill"></i> Stats
+    </button>
     <div class="menu-divider"></div>
     <button class="menu-item" (click)="setTheme(currentTheme === 'light' ? 'dark' : 'light')">
       <i [class]="currentTheme === 'light' ? 'bi bi-moon-fill' : 'bi bi-sun-fill'"></i>

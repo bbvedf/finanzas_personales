@@ -1,3 +1,4 @@
+<button *ngIf="showBackButton" (click)="goBack()">Back</button>
 <div class="chart-container">
   <canvas baseChart
     [data]="chartData"

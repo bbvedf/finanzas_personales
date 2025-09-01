@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { StatsService } from '../../core/services/stats.service';
 import { ChartData, ChartOptions } from 'chart.js';
 import { NgChartsModule } from 'ng2-charts';
@@ -12,6 +13,7 @@ import { NgChartsModule } from 'ng2-charts';
     styleUrls: ['./by-user.component.scss']
 })
 export class ByUserComponent implements OnInit {
+    @Input() showBackButton: boolean = true;
     chartData: ChartData<'bar'> = {
         labels: [],
         datasets: [{ label: 'Total por usuario', data: [] }]
@@ -19,7 +21,14 @@ export class ByUserComponent implements OnInit {
     chartOptions: ChartOptions<'bar'> = { responsive: true };
     chartType: 'bar' = 'bar';
 
-    constructor(private statsService: StatsService) { }
+    constructor(
+        private statsService: StatsService,
+        private router: Router
+    ) { }
+
+    goBack() {
+        this.router.navigate(['/stats']);
+    }
 
     ngOnInit(): void {
         this.statsService.getByUser().subscribe(data => {
