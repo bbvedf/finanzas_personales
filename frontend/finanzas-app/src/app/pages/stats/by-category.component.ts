@@ -1,6 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
 import { StatsService } from '../../core/services/stats.service';
 import { ChartData, ChartOptions } from 'chart.js';
 import { NgChartsModule } from 'ng2-charts';
@@ -14,8 +13,6 @@ import { ThemeService } from '../../core/services/theme.service';
     styleUrls: ['./by-category.component.scss']
 })
 export class ByCategoryComponent implements OnInit {
-    @Input() showBackButton: boolean = true;
-
     private _currentTheme: 'light' | 'dark' = 'light';
     get currentTheme() { return this._currentTheme; }
 
@@ -37,13 +34,8 @@ export class ByCategoryComponent implements OnInit {
 
     constructor(
         private statsService: StatsService,
-        private router: Router,
         public themeService: ThemeService,
     ) { }
-
-    goBack() {
-        this.router.navigate(['/stats']);
-    }
 
     ngOnInit(): void {
         // Suscribirse al tema

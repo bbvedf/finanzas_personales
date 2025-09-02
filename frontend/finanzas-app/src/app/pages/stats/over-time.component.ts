@@ -1,6 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
 import { StatsService } from '../../core/services/stats.service';
 import { ChartData, ChartOptions } from 'chart.js';
 import { NgChartsModule } from 'ng2-charts';
@@ -14,8 +13,6 @@ import { ThemeService } from '../../core/services/theme.service';
     styleUrls: ['./over-time.component.scss']
 })
 export class OverTimeComponent implements OnInit {
-    @Input() showBackButton: boolean = true;
-
     private _currentTheme: 'light' | 'dark' = 'light';
     get currentTheme() { return this._currentTheme; }
 
@@ -36,14 +33,9 @@ export class OverTimeComponent implements OnInit {
     chartType: 'line' = 'line';
 
     constructor(
-        private statsService: StatsService,
-        private router: Router,
+        private statsService: StatsService,        
         public themeService: ThemeService
     ) { }
-
-    goBack() {
-        this.router.navigate(['/stats']);
-    }
 
     ngOnInit(): void {
         // Suscribirse al tema
