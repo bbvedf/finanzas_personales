@@ -4,3 +4,6 @@ __pycache__/
 *.pyc
 mongo-data/
 reset_db_full.js
+mongo-data-backup2
+notas.txt
+requirements_local.txt

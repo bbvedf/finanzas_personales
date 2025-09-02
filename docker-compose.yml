@@ -12,4 +12,38 @@ services:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
     restart: unless-stopped
-    
+    networks:
+      - shared_net
+
+  finanzas-backend:
+    build:
+      context: ./backend
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./backend:/app
+    env_file:
+      - .env
+    depends_on:
+      - mongo
+    restart: on-failure
+    networks:
+      - shared_net
+
+  finanzas-frontend:
+    build:
+      context: ./frontend/finanzas-app    
+    command: npm start
+    ports:
+      - "4200:4200"
+    volumes:
+      - ./frontend/finanzas-app:/app
+    depends_on:
+      - finanzas-backend
+    networks:
+      - shared_net
+
+networks:
+  shared_net:
+    external: true
