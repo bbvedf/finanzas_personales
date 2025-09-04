@@ -1,12 +1,17 @@
 from app.config import settings
 from motor.motor_asyncio import AsyncIOMotorClient
 from bson import ObjectId
+from fastapi import HTTPException
+
 
 client = AsyncIOMotorClient(settings.mongo_uri)
 db = client[settings.db_name]
-users_collection = db["users"]
+
+
 
 # Usuarios
+users_collection = db["users"]
+
 async def create_user(user_data: dict):
     result = await users_collection.insert_one(user_data)
     return await users_collection.find_one({"_id": result.inserted_id})
@@ -29,23 +34,48 @@ async def delete_user(user_id: str):
 # Categorías
 categories_collection = db["categories"]
 
-async def create_category(cat_data: dict):
+async def create_category(cat_data: dict, user: dict):
+    cat_data["user_id"] = user["userId"]
     result = await categories_collection.insert_one(cat_data)
     return await categories_collection.find_one({"_id": result.inserted_id})
 
-async def get_categories():
-    return await categories_collection.find().to_list(length=100)
+async def get_categories(user: dict):
+    query = {}
+    if user["role"] != "admin":
+        query["user_id"] = user["userId"]
+    return await categories_collection.find(query).to_list(length=100)
 
-async def get_category(cat_id: str):
+async def get_category(cat_id: str, user: dict):
+    query = {"_id": ObjectId(cat_id)}
+    if user["role"] != "admin":
+        query["user_id"] = user["userId"]
+
+    category = await categories_collection.find_one(query)
+    if not category:
+        raise HTTPException(status_code=404, detail="Categoría no encontrada o sin permisos")
+    return category
+
+async def update_category(cat_id: str, cat_data: dict, user: dict):
+    query = {"_id": ObjectId(cat_id)}
+    if user["role"] != "admin":
+        query["user_id"] = user["userId"]
+
+    result = await categories_collection.update_one(query, {"$set": cat_data})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="No tienes permisos para actualizar esta categoría")
+
     return await categories_collection.find_one({"_id": ObjectId(cat_id)})
 
-async def update_category(cat_id: str, cat_data: dict):
-    await categories_collection.update_one({"_id": ObjectId(cat_id)}, {"$set": cat_data})
-    return await get_category(cat_id)
+async def delete_category(cat_id: str, user: dict):
+    query = {"_id": ObjectId(cat_id)}
+    if user["role"] != "admin":
+        query["user_id"] = user["userId"]
 
-async def delete_category(cat_id: str):
-    result = await categories_collection.delete_one({"_id": ObjectId(cat_id)})
-    return result.deleted_count
+    result = await categories_collection.delete_one(query)
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="No tienes permisos para eliminar esta categoría")
+
+    return {"deleted": True}
 
 
 # Transacciones

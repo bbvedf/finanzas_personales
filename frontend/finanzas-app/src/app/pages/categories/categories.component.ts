@@ -1,3 +1,4 @@
+//frontend/finanzas-app/src/app/pages/categories/categories.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -38,10 +39,10 @@ export class CategoriesComponent implements OnInit {
   showDeleteModal = false;
   categoryToDelete: Category | null = null;
 
-  constructor(private categoryService: CategoryService) {}
+  constructor(private categoryService: CategoryService) { }
 
-  ngOnInit(): void {
-    this.loadCategories();
+  ngOnInit(): void {    
+      this.loadCategories();
   }
 
   loadCategories(): void {

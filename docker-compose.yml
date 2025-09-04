@@ -29,7 +29,9 @@ services:
       - mongo
     restart: on-failure
     networks:
-      - shared_net
+      shared_net:
+        aliases:
+          - finanzas-backend
 
   finanzas-frontend:
     build:

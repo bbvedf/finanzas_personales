@@ -16,6 +16,7 @@
             "outputPath": "dist/finanzas-app",
             "index": "src/index.html",
             "browser": "src/main.ts",
+            "baseHref": "/finanzas/",
             "polyfills": [
               "zone.js"
             ],
@@ -33,6 +34,7 @@
           },
           "configurations": {
             "production": {
+              "baseHref": "/finanzas/",
               "budgets": [
                 {
                   "type": "initial",
@@ -48,6 +50,7 @@
               "outputHashing": "all"
             },
             "development": {
+              "baseHref": "/finanzas/",
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
@@ -57,6 +60,12 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "host": "0.0.0.0",
+            "port": 4200,
+            "publicHost": "ryzenpc.mooo.com",
+            "allowedHosts": ["ryzenpc.mooo.com"]
+          },
           "configurations": {
             "production": {
               "buildTarget": "finanzas-app:build:production"

@@ -31,3 +31,4 @@ def admin_required(decoded: dict = Depends(verify_token)):
             detail="Se requieren privilegios de administrador"
         )
     return decoded
+

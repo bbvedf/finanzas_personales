@@ -13,7 +13,7 @@ export const appConfig: ApplicationConfig = {
 };
 
 export const environment = {
-  apiUrl: 'http://localhost:8001'
+  apiUrl: 'https://ryzenpc.mooo.com/api/finanzas'
 };
 
 

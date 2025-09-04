@@ -6,3 +6,4 @@ router = APIRouter(prefix="/finanzas", tags=["finanzas"])
 @router.get("/dashboard")
 def get_dashboard(user=Depends(admin_required)):
     return {"message": f"Acceso permitido a {user['email']}"}
+

@@ -3,13 +3,18 @@ from app.api import users, categories, transactions, stats
 from app.config import settings
 from motor.motor_asyncio import AsyncIOMotorClient
 from fastapi.middleware.cors import CORSMiddleware
+from app.routes import finanzas, categories
+from dotenv import load_dotenv
+load_dotenv()
 
 app = FastAPI(title="Finanzas Personales Backend")
+app.include_router(finanzas.router)
+app.include_router(categories.router)
 
 # Configuración CORS
 origins = [
+    "https://ryzenpc.mooo.com",
     "http://localhost:4200",  # Angular dev server
-    
 ]
 
 app.add_middleware(
@@ -41,4 +46,9 @@ app.include_router(stats.router)
 # Endpoint de prueba
 @app.get("/test")
 async def test():
+    return {"status": "ok"}
+
+# Endpoint de healthcheck
+@app.get("/health")
+async def healthcheck():
     return {"status": "ok"}
