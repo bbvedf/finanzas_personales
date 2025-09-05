@@ -10,24 +10,54 @@
     </button>
   </header>
 
-  <!-- Dropdown del menú -->
+  <!-- Dropdown del menú ACTUALIZADO -->
   <div class="menu-dropdown" *ngIf="isOpen">
-    <button class="menu-item" (click)="navigateTo('/users')">
-      <i class="bi bi-people-fill"></i> Users
+    <!-- Navegación a React -->
+    <button class="menu-item" (click)="goToDashboard()">
+      <i class="bi bi-house-fill"></i> Inicio
     </button>
+    <button class="menu-item" (click)="goToUsers()">
+      <i class="bi bi-people-fill"></i> Gestión Usuarios
+    </button>
+
+    <div class="menu-divider"></div>
+
+    <!-- Submenú Finanzas -->
+    <div class="submenu-header">
+      <i class="bi bi-wallet2"></i> Finanzas
+    </div>
     <button class="menu-item" (click)="navigateTo('/categories')">
-      <i class="bi bi-list-task"></i> Categories
+      <i class="bi bi-folder-fill"></i> <!-- ← Cambiado -->
+      Categorías
     </button>
     <button class="menu-item" (click)="navigateTo('/transactions')">
-      <i class="bi bi-arrow-left-right"></i> Transactions
+      <i class="bi bi-credit-card-fill"></i> <!-- ← Cambiado -->
+      Transacciones
     </button>
     <button class="menu-item" (click)="navigateTo('/stats')">
-      <i class="bi bi-bar-chart-fill"></i> Stats
+      <i class="bi bi-bar-chart-fill"></i>
+      Estadísticas
     </button>
+
+
+
+    <!-- Herramientas -->
+    <button class="menu-item" (click)="goToCompoundInterest()">
+      <i class="bi bi-calculator-fill"></i> Interés Compuesto
+    </button>
+    <button class="menu-item" (click)="goToMortgage()">
+      <i class="bi bi-graph-up"></i> Amortización Hipoteca
+    </button>
+
     <div class="menu-divider"></div>
-    <button class="menu-item" (click)="setTheme(currentTheme === 'light' ? 'dark' : 'light')">
+
+    <!-- Configuración -->
+    <button class="menu-item" (click)="toggleTheme()">
       <i [class]="currentTheme === 'light' ? 'bi bi-moon-fill' : 'bi bi-sun-fill'"></i>
       {{ currentTheme === 'light' ? 'Modo Oscuro' : 'Modo Claro' }}
+    </button>
+    <button class="menu-item" (click)="logout()">
+      <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
     </button>
   </div>
 </div>

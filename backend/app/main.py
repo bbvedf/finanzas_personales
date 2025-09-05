@@ -1,15 +1,19 @@
 from fastapi import FastAPI
-from app.api import users, categories, transactions, stats
+##la carpeta api quedará obsoleta en detrimento de routes.
+##estamos migrando componentes poco a poco.
+from app.api import users, stats
+##
 from app.config import settings
 from motor.motor_asyncio import AsyncIOMotorClient
 from fastapi.middleware.cors import CORSMiddleware
-from app.routes import finanzas, categories
+from app.routes import finanzas, categories, transactions
 from dotenv import load_dotenv
 load_dotenv()
 
 app = FastAPI(title="Finanzas Personales Backend")
 app.include_router(finanzas.router)
 app.include_router(categories.router)
+app.include_router(transactions.router)
 
 # Configuración CORS
 origins = [

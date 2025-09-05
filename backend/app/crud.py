@@ -2,11 +2,33 @@ from app.config import settings
 from motor.motor_asyncio import AsyncIOMotorClient
 from bson import ObjectId
 from fastapi import HTTPException
-
+import asyncpg 
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 client = AsyncIOMotorClient(settings.mongo_uri)
 db = client[settings.db_name]
 
+# Comun. Conexion con Postgres.
+async def get_users_from_postgres():
+    conn = None
+    try:
+        conn = await asyncpg.connect(
+            host=os.getenv('POSTGRES_HOST'),
+            port=int(os.getenv('POSTGRES_PORT')),
+            user=os.getenv('POSTGRES_USER'),
+            password=os.getenv('POSTGRES_PASSWORD'),
+            database=os.getenv('POSTGRES_DATABASE')
+        )
+        users = await conn.fetch("SELECT id, username FROM users")
+        return users
+    except Exception as e:
+        print(f"Error conectando a Postgres: {e}")
+        return []
+    finally:
+        if conn:
+            await conn.close()
 
 
 # Usuarios
@@ -81,20 +103,43 @@ async def delete_category(cat_id: str, user: dict):
 # Transacciones
 transactions_collection = db["transactions"]
 
-async def create_transaction(tx_data: dict):
+async def create_transaction(tx_data: dict, user: dict):
+    tx_data["user_id"] = user["userId"]  # ← Añadir user_id del JWT
     result = await transactions_collection.insert_one(tx_data)
     return await transactions_collection.find_one({"_id": result.inserted_id})
 
-async def get_transactions():
-    return await transactions_collection.find().to_list(length=100)
+async def get_transactions(user: dict):
+    query = {}
+    if user["role"] != "admin":
+        query["user_id"] = user["userId"]  # ← Filtrar por usuario
+    return await transactions_collection.find(query).to_list(length=1000)
 
-async def get_transaction(tx_id: str):
-    return await transactions_collection.find_one({"_id": ObjectId(tx_id)})
+async def get_transaction(tx_id: str, user: dict):
+    query = {"_id": ObjectId(tx_id)}
+    if user["role"] != "admin":
+        query["user_id"] = user["userId"]
+    
+    transaction = await transactions_collection.find_one(query)
+    if not transaction:
+        raise HTTPException(status_code=404, detail="Transacción no encontrada")
+    return transaction
 
-async def update_transaction(tx_id: str, tx_data: dict):
-    await transactions_collection.update_one({"_id": ObjectId(tx_id)}, {"$set": tx_data})
-    return await get_transaction(tx_id)
+async def update_transaction(tx_id: str, tx_data: dict, user: dict):
+    query = {"_id": ObjectId(tx_id)}
+    if user["role"] != "admin":
+        query["user_id"] = user["userId"]
+    
+    result = await transactions_collection.update_one(query, {"$set": tx_data})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Transacción no encontrada")
+    return await get_transaction(tx_id, user)
 
-async def delete_transaction(tx_id: str):
-    result = await transactions_collection.delete_one({"_id": ObjectId(tx_id)})
+async def delete_transaction(tx_id: str, user: dict):
+    query = {"_id": ObjectId(tx_id)}
+    if user["role"] != "admin":
+        query["user_id"] = user["userId"]
+    
+    result = await transactions_collection.delete_one(query)
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Transacción no encontrada")
     return result.deleted_count

@@ -20,7 +20,7 @@ export class NavbarComponent {
   }
 
   toggleMenu() {
-    console.log('Toggle menu clicked'); // Para depurar
+    console.log('Toggle menu clicked');
     this.isOpen = !this.isOpen;
   }
 
@@ -29,13 +29,47 @@ export class NavbarComponent {
   }
 
   setTheme(theme: string) {
-    console.log('NavbarComponent calls setTheme with', theme);  // <--- prueba
+    console.log('NavbarComponent calls setTheme with', theme);
     this.themeService.setTheme(theme);
     this.closeMenu();
   }
 
   navigateTo(route: string) {
     this.router.navigate([route]);
+    this.closeMenu();
+  }
+
+toggleTheme() {
+  const newTheme = this.currentTheme === 'light' ? 'dark' : 'light';
+  this.setTheme(newTheme);
+}
+  
+  // --- NUEVOS MÉTODOS PARA NAVEGACIÓN A REACT ---
+  goToDashboard() {
+    window.location.href = '/dashboard';
+    this.closeMenu();
+  }
+
+  goToUsers() {
+    window.location.href = '/dashboard?tab=configuracion';
+    this.closeMenu();
+  }
+
+  goToCompoundInterest() {
+    window.location.href = '/dashboard?tab=calculadora';
+    this.closeMenu();
+  }
+
+  goToMortgage() {
+    window.location.href = '/dashboard?tab=mortgage';
+    this.closeMenu();
+  }
+
+  logout() {
+    if (window.AuthBridge?.clearAuth) {
+      window.AuthBridge.clearAuth();
+    }
+    window.location.href = '/login';
     this.closeMenu();
   }
 }

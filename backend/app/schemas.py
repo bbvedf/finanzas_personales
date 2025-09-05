@@ -24,7 +24,7 @@ class CategoryOut(BaseModel):
 
 # Transacción
 class TransactionCreate(BaseModel):
-    user_id: str
+    user_id: int
     category_id: str
     amount: float
     description: str | None = None
@@ -32,10 +32,10 @@ class TransactionCreate(BaseModel):
 
 class TransactionOut(BaseModel):
     id: str
-    user_id: str
+    user_id: int
     category_id: str
-    username: str
-    category_name: str
+    username: Optional[str] = None
+    category_name: Optional[str] = None
     amount: float
     description: Optional[str] = None
     date: datetime
