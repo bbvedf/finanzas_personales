@@ -69,6 +69,37 @@
   }
 }
 
+/* Añadir esto para que los selects coincidan con los inputs */
+.form-field select {
+  background-color: var(--color-input-bg);
+  color: var(--color-input-text);
+  border: 1px solid var(--color-input-border);
+  padding: 0.6rem;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  box-sizing: border-box;
+  cursor: pointer;
+
+  &::placeholder {
+    color: var(--color-muted);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-link);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  }
+
+  /* Estilo para las opciones */
+  option {
+    background-color: var(--color-input-bg);
+    color: var(--color-input-text);
+    padding: 0.5rem;
+  }
+}
+
+
 .form-buttons {
   display: flex;
   gap: 0.5rem;
@@ -96,6 +127,12 @@
 
 .table-wrapper {
   overflow-x: auto;
+  
+  /* Asegurar que la paginación tenga suficiente espacio */
+  .table-footer {
+    min-width: max-content;
+    box-sizing: border-box;
+  }
 }
 
 .table {
@@ -147,23 +184,6 @@
     background: #db9a9a;
     opacity: 0.85;
     padding: 8px;
-  }
-}
-
-@media (max-width: 768px) {
-  .container {
-    flex-direction: column;
-  }
-
-  .form-col, .table-col {
-    max-width: 100%;
-  }
-
-  .table {
-    font-size: 0.9rem;
-    th, td {
-      padding: 0.5rem;
-    }
   }
 }
 
@@ -230,6 +250,22 @@
   flex-direction: column;
   gap: 0.5rem;
   min-width: 200px;
+  
+  // Prevenir que se salga de la pantalla
+  max-width: 300px;
+  word-wrap: break-word;
+}
+
+// Para el primer filtro (Usuario) que se sale por la izquierda
+th:first-child .filter-overlay {
+  right: auto;
+  left: 0;
+}
+
+// Para el último filtro (Fecha) que se sale por la derecha  
+th:last-child .filter-overlay {
+  right: 0;
+  left: auto;
 }
 
 .filter-overlay select,
@@ -296,6 +332,9 @@
 
 
 
+
+
+
 /*
 .modal {
   position: fixed;
@@ -316,3 +355,46 @@
   text-align: center;
 }
 */
+
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .form-col, .table-col {
+    max-width: 100%;
+  }
+
+  .table {
+    font-size: 0.9rem;
+    th, td {
+      padding: 0.5rem;
+    }
+  }
+
+  .filter-overlay {
+    position: fixed;
+    top: 50% !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translate(-50%, -50%);
+    max-width: 90vw;
+    max-height: 80vh;
+    overflow-y: auto;
+    z-index: 10000;
+  } 
+  
+  .table-wrapper {
+    .table-footer {
+      min-width: 100%;
+      padding: 1rem;
+      
+      .page-size,
+      .pagination,
+      .total_records {
+        min-width: 100%;
+      }
+    }
+  }
+}

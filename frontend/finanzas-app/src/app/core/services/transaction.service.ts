@@ -1,13 +1,13 @@
 // frontend/finanzas-app/src/app/core/services/transaction.service.ts
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Transaction } from '../models/transaction.model';
 import { environment } from '../../app.config';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class TransactionService {
-  private baseUrl = `${environment.apiUrl}/transactions`;
+  private baseUrl = `${environment.apiUrl}/transactions/`;
 
   constructor(private http: HttpClient) { }
 
@@ -32,21 +32,21 @@ export class TransactionService {
   }
 
   getTransactionsFiltered(filters?: {
-    user_id?: string,
+    user_id?: number,
     category_id?: string,
     start_date?: string,
     end_date?: string
   }): Observable<Transaction[]> {
-    let params = new URLSearchParams();
+    let params = new HttpParams();  // Usar HttpParams en lugar de URLSearchParams
+
     if (filters) {
-      if (filters.user_id) params.set('user_id', filters.user_id);
-      if (filters.category_id) params.set('category_id', filters.category_id);
-      if (filters.start_date) params.set('start_date', filters.start_date);
-      if (filters.end_date) params.set('end_date', filters.end_date);
+      if (filters.user_id !== undefined) params = params.set('user_id', filters.user_id.toString());
+      if (filters.category_id) params = params.set('category_id', filters.category_id);
+      if (filters.start_date) params = params.set('start_date', filters.start_date);
+      if (filters.end_date) params = params.set('end_date', filters.end_date);
     }
-    const queryString = params.toString();
-    const url = queryString ? `${this.baseUrl}?${queryString}` : this.baseUrl;
-    return this.http.get<Transaction[]>(url);
+
+    return this.http.get<Transaction[]>(this.baseUrl, { params });
   }
 
 }

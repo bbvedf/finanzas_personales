@@ -6,6 +6,7 @@ import { TransactionService } from '../../core/services/transaction.service';
 import { Transaction } from '../../core/models/transaction.model';
 import { UserService } from '../../core/services/user.service';
 import { CategoryService } from '../../core/services/category.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
     selector: 'app-transactions',
@@ -41,7 +42,7 @@ export class TransactionsComponent implements OnInit {
     pageSize = 5;
 
     // formulario
-    userId: string = '';
+    userId: number | null = null;
     userName: string = '';
     categoryId: string = '';
     categoryName: string = '';
@@ -61,7 +62,8 @@ export class TransactionsComponent implements OnInit {
     constructor(
         private transactionService: TransactionService,
         private userService: UserService,
-        private categoryService: CategoryService
+        private categoryService: CategoryService,
+        private http: HttpClient
     ) { }
 
     ngOnInit(): void {
@@ -70,9 +72,8 @@ export class TransactionsComponent implements OnInit {
         this.loadCategories();
     }
 
-    loadTransactions(): void {
-        this.transactionService.getTransactions().subscribe((data) => {
-            console.log('Raw transaction data:', JSON.stringify(data, null, 2));
+    loadTransactions(filters?: any): void {
+        this.transactionService.getTransactionsFiltered(filters).subscribe((data) => {
             this.transactions = data;
             this.filteredTransactions = [...this.transactions];
             this.applyFilter();
@@ -80,21 +81,38 @@ export class TransactionsComponent implements OnInit {
     }
 
     loadUsers(): void {
-        this.userService.getUsers().subscribe((data) => {
-            this.users = data; // [{ id, username }]
-        });
+        this.http.get<{ users: any[] }>('/api/admin/users').subscribe(
+            (response) => {
+                this.users = response.users; // ← Extraemos el array de la propiedad "users"
+            },
+            (error) => {
+                console.error('Error cargando usuarios admin:', error);
+                if (error.status === 403 || error.status === 401) {
+                    alert('Se requieren permisos de administrador');
+                }
+            }
+        );
     }
 
     loadCategories(): void {
-        this.categoryService.getCategories().subscribe((data) => {
-            this.categories = data; // [{ id, category_name }]
+        this.categoryService.getCategories().subscribe(categories => {
+            this.categories = categories;
         });
     }
 
     // FILTROS
+    // Añadir propiedad para controlar modo móvil
+    isMobile = window.innerWidth <= 768;
+
     toggleFilter(col: string) {
         this.activeFilter = col;
         this.tempFilters = JSON.parse(JSON.stringify(this.filters));
+
+        if (this.isMobile) {
+            // Scroll a la posición del filtro para móvil
+            const thElement = document.querySelector(`th:has(.filter-overlay)`);
+            thElement?.scrollIntoView({ behavior: 'smooth' });
+        }
     }
 
     applyFilter() {
@@ -212,7 +230,7 @@ export class TransactionsComponent implements OnInit {
 
     // FORMULARIO
     resetForm() {
-        this.userId = '';
+        this.userId = null;
         this.userName = '';
         this.categoryId = '';
         this.categoryName = '';
@@ -223,14 +241,26 @@ export class TransactionsComponent implements OnInit {
     }
 
     submitForm() {
+        // Si hay fecha, crear Date a medianoche en UTC
+        let dateToSend: Date;
+
+        if (this.date) {
+            // Crear fecha en UTC a medianoche (00:00:00)
+            const [year, month, day] = this.date.split('-');
+            dateToSend = new Date(Date.UTC(parseInt(year), parseInt(month) - 1, parseInt(day)));
+        } else {
+            // Fecha actual en UTC
+            const now = new Date();
+            dateToSend = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
+        }
+
         const tx = {
-            user_id: this.userId,
+            user_id: this.userId!,
             category_id: this.categoryId,
             amount: this.amount!,
             description: this.description,
-            date: this.date,
+            date: dateToSend,
         };
-
         if (this.currentTransactionId) {
             this.transactionService.updateTransaction(this.currentTransactionId, tx).subscribe(() => {
                 this.loadTransactions();
@@ -243,7 +273,7 @@ export class TransactionsComponent implements OnInit {
         this.resetForm();
     }
 
-    // ACCIONES
+    // ACCIONES    
     editTransaction(tx: Transaction) {
         this.currentTransactionId = tx.id;
         this.userId = tx.user_id;
@@ -252,8 +282,33 @@ export class TransactionsComponent implements OnInit {
         this.categoryName = tx.category_name;
         this.amount = tx.amount;
         this.description = tx.description ?? '';
-        this.date = tx.date ?? '';
+        this.date = tx.date ? new Date(tx.date).toISOString().split('T')[0] : '';
+
+        // Forzar update del select-box
+        setTimeout(() => {
+            // Esto activará el dropdown
+            const userInput = document.getElementById('userInput') as HTMLInputElement;
+            const categoryInput = document.getElementById('categoryInput') as HTMLInputElement;
+            if (userInput) userInput.click();
+            if (categoryInput) categoryInput.click();
+        }, 100);
     }
+
+    // Sólo para el html, que no pinta bien la fecha de BD.
+    formatDateForDisplay(date: Date): string {
+        if (!date) return '';
+
+        // Convertir UTC a fecha local para display
+        const localDate = new Date(date);
+        localDate.setMinutes(localDate.getMinutes() + localDate.getTimezoneOffset());
+
+        return localDate.toLocaleDateString('es-ES', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
+    }
+
 
     handleDeleteClick(tx: Transaction) {
         this.transactionToDelete = tx;
@@ -276,8 +331,9 @@ export class TransactionsComponent implements OnInit {
 
 
     onUserNameChange(): void {
+        // Para select, el value viene directamente del option
         const foundUser = this.users.find(u => u.username === this.userName);
-        this.userId = foundUser?.id || '';
+        this.userId = foundUser?.id || null;
     }
 
     onCategoryNameChange(): void {

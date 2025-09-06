@@ -1,4 +1,5 @@
 from app.config import settings
+from datetime import datetime
 from motor.motor_asyncio import AsyncIOMotorClient
 from bson import ObjectId
 from fastapi import HTTPException
@@ -104,7 +105,22 @@ async def delete_category(cat_id: str, user: dict):
 transactions_collection = db["transactions"]
 
 async def create_transaction(tx_data: dict, user: dict):
-    tx_data["user_id"] = user["userId"]  # ← Añadir user_id del JWT
+    # Si viene user_id en los datos y es diferente al usuario logueado
+    if "user_id" in tx_data and tx_data["user_id"] != user["userId"]:
+        # Verificar si es admin
+        if user.get("role") != "admin":
+            raise HTTPException(
+                status_code=403, 
+                detail="Solo administradores pueden crear transacciones para otros usuarios"
+            )
+    else:
+        # Usar el user_id del usuario logueado
+        tx_data["user_id"] = user["userId"]
+    
+    # Mover la conversión de fecha FUERA del else
+    if "date" in tx_data and isinstance(tx_data["date"], str):
+        tx_data["date"] = datetime.fromisoformat(tx_data["date"].replace('Z', ''))
+    
     result = await transactions_collection.insert_one(tx_data)
     return await transactions_collection.find_one({"_id": result.inserted_id})
 
@@ -129,10 +145,15 @@ async def update_transaction(tx_id: str, tx_data: dict, user: dict):
     if user["role"] != "admin":
         query["user_id"] = user["userId"]
     
+    # Corregir indentación
+    if "date" in tx_data and isinstance(tx_data["date"], str):
+        tx_data["date"] = datetime.fromisoformat(tx_data["date"].replace('Z', ''))
+    
     result = await transactions_collection.update_one(query, {"$set": tx_data})
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Transacción no encontrada")
     return await get_transaction(tx_id, user)
+
 
 async def delete_transaction(tx_id: str, user: dict):
     query = {"_id": ObjectId(tx_id)}

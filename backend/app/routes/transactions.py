@@ -39,7 +39,7 @@ async def list_transactions(decoded=Depends(verify_token)):
             "category_name": category_map.get(str(tx["category_id"]), "Unknown"),
             "amount": tx["amount"],
             "description": tx.get("description"),
-            "date": tx["date"]
+            "date": tx["date"].isoformat() + 'Z'  # ← Convertir T en TZ para el manejo de fechas.
         }
         for tx in transactions
     ]
@@ -52,15 +52,15 @@ async def create_new_transaction(transaction: TransactionCreate, decoded=Depends
         "category_id": transaction.category_id,
         "amount": transaction.amount,
         "description": transaction.description,
-        "date": transaction.date,        
+        "date": transaction.date,
     }, decoded)
     return {
         "id": str(new_tx["_id"]),
         "user_id": new_tx["user_id"],
         "category_id": new_tx["category_id"],
         "amount": new_tx["amount"],
-        "description": new_tx.get("description"),
-        "date": new_tx["date"]
+        "description": new_tx.get("description"),        
+        "date": new_tx["date"].isoformat() + 'Z'  # ← Convertir T en TZ para el manejo de fechas.
     }
 
 # PUT actualizar transacción
@@ -78,8 +78,8 @@ async def update_existing_transaction(tx_id: str, transaction: TransactionCreate
         "user_id": updated["user_id"],
         "category_id": updated["category_id"],
         "amount": updated["amount"],
-        "description": updated.get("description"),
-        "date": updated["date"]
+        "description": updated.get("description"),        
+        "date": updated["date"].isoformat() + 'Z'  # ← Convertir T en TZ para el manejo de fechas.
     }
 
 # DELETE eliminar transacción

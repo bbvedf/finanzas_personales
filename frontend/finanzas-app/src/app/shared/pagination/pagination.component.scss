@@ -6,13 +6,16 @@
   padding: 0.5rem 0;
   border-top: 1px solid #ddd;
   font-size: 0.9rem;
+  flex-wrap: wrap; /* ← Añadido */
+  gap: 1rem; /* ← Añadido */
 }
 
 /* Contenedor de filas por página */
 .page-size {
   display: flex;
   align-items: center;
-  gap: 0.5rem; /* espacio entre elementos */
+  gap: 0.5rem;
+  flex-wrap: wrap; /* ← Añadido */
 }
 
 /* Contenedor de paginación */
@@ -20,6 +23,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  flex-wrap: wrap; /* ← Añadido */
 }
 
 /* Inputs y select */
@@ -37,7 +41,6 @@
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
   border: 1px solid #ccc;
-  /*background-color: #f5f5f5;*/
   cursor: pointer;
   font-size: 0.9rem;
   transition: background-color 0.2s;
@@ -55,4 +58,61 @@
 .total_records {
   display: flex;
   align-items: center;  
-}   
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .table-footer {
+    flex-direction: column; /* ← Apilar verticalmente */
+    align-items: stretch;
+    gap: 0.8rem;
+  }
+  
+  .page-size, .pagination, .total_records {
+    justify-content: center;
+    width: 100%;
+  }
+  
+  .page-size {
+    order: 1;
+  }
+  
+  .pagination {
+    order: 2;
+    gap: 0.3rem;
+    
+    /* Ajustar tamaño de elementos en móvil */
+    button, select, input {
+      flex: 1;
+      min-width: 60px;
+      max-width: 100px;
+      padding: 0.4rem;
+    }
+  }
+  
+  .total_records {
+    order: 3;
+    text-align: center;
+  }
+}
+
+/* Para tablets (∼1035px) */
+@media (max-width: 1035px) and (min-width: 769px) {
+  .table-footer {
+    gap: 0.5rem;
+  }
+  
+  .page-size, .pagination {
+    flex-wrap: wrap;
+    justify-content: center;
+    
+    > * {
+      margin: 0.1rem;
+    }
+  }
+  
+  .total_records {
+    min-width: 100px;
+    text-align: center;
+  }
+}

@@ -7,30 +7,18 @@
       <div class="card form-card">
         <div class="form-field">
           <label for="user">Usuario</label>
-          <input
-            id="user"
-            list="userList"
-            [(ngModel)]="userName"
-            (input)="onUserNameChange()"
-            placeholder="Escribe o selecciona un usuario"
-          />
-          <datalist id="userList">
-            <option *ngFor="let u of users" [value]="u.username"></option>
-          </datalist>
+          <select id="user" [(ngModel)]="userName" (change)="onUserNameChange()">
+            <option value="">Selecciona un usuario</option>
+            <option *ngFor="let u of users" [value]="u.username">{{ u.username }}</option>
+          </select>
         </div>
 
         <div class="form-field">
           <label for="category">Categoría</label>
-          <input
-            id="category"
-            list="categoryList"
-            [(ngModel)]="categoryName"
-            (input)="onCategoryNameChange()"
-            placeholder="Escribe o selecciona una categoría"
-          />
-          <datalist id="categoryList">
-            <option *ngFor="let c of categories" [value]="c.name"></option>
-          </datalist>
+          <select id="category" [(ngModel)]="categoryName" (change)="onCategoryNameChange()">
+            <option value="">Selecciona una categoría</option>
+            <option *ngFor="let c of categories" [value]="c.name">{{ c.name }}</option>
+          </select>
         </div>
 
         <div class="form-field">
@@ -75,7 +63,8 @@
                   Usuario
                   <ng-container *ngTemplateOutlet="iconGroup; context: { field: 'username' }"></ng-container>
                   <div *ngIf="activeFilter === 'username'" class="filter-overlay">
-                    <ng-container *ngTemplateOutlet="textFilter; context: { field: 'username', placeholder: 'Filtrar usuario' }"></ng-container>
+                    <ng-container
+                      *ngTemplateOutlet="textFilter; context: { field: 'username', placeholder: 'Filtrar usuario' }"></ng-container>
                   </div>
                 </th>
 
@@ -83,7 +72,8 @@
                   Categoría
                   <ng-container *ngTemplateOutlet="iconGroup; context: { field: 'category_name' }"></ng-container>
                   <div *ngIf="activeFilter === 'category_name'" class="filter-overlay">
-                    <ng-container *ngTemplateOutlet="textFilter; context: { field: 'category_name', placeholder: 'Filtrar categoría' }"></ng-container>
+                    <ng-container
+                      *ngTemplateOutlet="textFilter; context: { field: 'category_name', placeholder: 'Filtrar categoría' }"></ng-container>
                   </div>
                 </th>
 
@@ -99,7 +89,8 @@
                   Descripción
                   <ng-container *ngTemplateOutlet="iconGroup; context: { field: 'description' }"></ng-container>
                   <div *ngIf="activeFilter === 'description'" class="filter-overlay">
-                    <ng-container *ngTemplateOutlet="textFilter; context: { field: 'description', placeholder: 'Filtrar descripción' }"></ng-container>
+                    <ng-container
+                      *ngTemplateOutlet="textFilter; context: { field: 'description', placeholder: 'Filtrar descripción' }"></ng-container>
                   </div>
                 </th>
 
@@ -121,7 +112,7 @@
                 <td>{{ tx.category_name }}</td>
                 <td>{{ tx.amount }}</td>
                 <td>{{ tx.description }}</td>
-                <td>{{ tx.date | date: 'dd/MM/yyyy' }}</td>
+                <td>{{ formatDateForDisplay(tx.date) }}</td>
                 <td>
                   <button class="icon-button edit-button" (click)="editTransaction(tx)">
                     <i class="bi bi-pencil-fill"></i>
@@ -137,13 +128,9 @@
             </tbody>
           </table>
 
-          <app-pagination
-            [totalItems]="filteredTransactions.length"
-            [pageSize]="pageSize"
-            [currentPage]="currentPage"
+          <app-pagination [totalItems]="filteredTransactions.length" [pageSize]="pageSize" [currentPage]="currentPage"
             (pageChange)="currentPage = $event; updatePagedTransactions()"
-            (pageSizeChange)="pageSize = $event; currentPage = 1; updatePagedTransactions()"
-          ></app-pagination>
+            (pageSizeChange)="pageSize = $event; currentPage = 1; updatePagedTransactions()"></app-pagination>
         </div>
       </div>
     </div>
@@ -170,7 +157,8 @@
 <ng-template #iconGroup let-field="field">
   <div class="icon-group">
     <button class="filter-icon" (click)="toggleFilter(field)">
-      <i class="{{ filters[field].value || filters[field].min || filters[field].max || filters[field].start || filters[field].end ? 'bi bi-funnel-fill' : 'bi bi-funnel' }}"></i>
+      <i
+        class="{{ filters[field].value || filters[field].min || filters[field].max || filters[field].start || filters[field].end ? 'bi bi-funnel-fill' : 'bi bi-funnel' }}"></i>
     </button>
     <button class="sort-icon" (click)="toggleSort(field)">
       <i [ngClass]="{
