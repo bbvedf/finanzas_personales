@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { HostListener, ElementRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { PaginationComponent } from '../../shared/pagination/pagination.component';
@@ -63,8 +64,30 @@ export class TransactionsComponent implements OnInit {
         private transactionService: TransactionService,
         private userService: UserService,
         private categoryService: CategoryService,
-        private http: HttpClient
+        private http: HttpClient,
+        private elementRef: ElementRef,
     ) { }
+
+    // Añadir propiedad para controlar el menú
+    showExportMenu = false;
+
+    // Método para cerrar menú al hacer click fuera
+    @HostListener('document:click', ['$event'])
+    onDocumentClick(event: MouseEvent) {
+        if (!this.elementRef.nativeElement.contains(event.target)) {
+            this.showExportMenu = false;
+        }
+    }
+
+
+    isRightEdge(): boolean {
+        const exportBtn = this.elementRef.nativeElement.querySelector('.export-button');
+        if (!exportBtn) return false;
+
+        const rect = exportBtn.getBoundingClientRect();
+        return rect.right + 150 > window.innerWidth; // 150 = ancho del menú
+    }
+
 
     ngOnInit(): void {
         this.loadTransactions();
@@ -341,4 +364,202 @@ export class TransactionsComponent implements OnInit {
         this.categoryId = foundCategory?.id || '';
     }
 
+    //EXPORTs    
+    exportCSV() {
+        // Usar filteredTransactions en lugar de llamar al backend
+        const csvData = this.generateCSVFromData(this.filteredTransactions);
+
+        const blob = new Blob([csvData], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `transacciones_filtradas_${new Date().toISOString().slice(0, 10)}.csv`;
+        a.click();
+        window.URL.revokeObjectURL(url);
+        this.showExportMenu = false;
+    }
+
+    private generateCSVFromData(transactions: Transaction[]): string {
+        let csvData = "Usuario,Categoría,Monto,Fecha,Descripción\n";
+
+        for (const tx of transactions) {
+            csvData += `"${tx.username}","${tx.category_name}",${tx.amount},${tx.date},"${tx.description || ''}"\n`;
+        }
+
+        return csvData;
+    }
+
+    async exportExcel() {
+        const ExcelJS = (await import('exceljs')).default;
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('Transacciones');
+
+        // Título
+        const titleRow = worksheet.addRow(['Reporte de Transacciones Finanzas']);
+        titleRow.font = { bold: true, size: 16, color: { argb: 'FF2c5282' } };
+        titleRow.alignment = { horizontal: 'center' };
+        worksheet.mergeCells('A1:E1');
+
+        // Subtítulo
+        const subtitleRow = worksheet.addRow([
+            `Generado: ${new Date().toLocaleDateString('es-ES')} | Total: ${this.filteredTransactions.length} transacciones`
+        ]);
+        subtitleRow.font = { italic: true, color: { argb: 'FF666666' } };
+        subtitleRow.alignment = { horizontal: 'center' };
+        worksheet.mergeCells('A2:E2');
+        worksheet.addRow([]); // Fila vacía
+
+        // Cabecera de tabla (fila 4)
+        const headerRow = worksheet.addRow(['Usuario', 'Categoría', 'Monto', 'Fecha', 'Descripción']);
+        const headerRowNumber = 4; // ← Definir aquí
+
+        headerRow.eachCell(cell => {
+            cell.fill = {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: { argb: 'FF2c5282' }
+            };
+            cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+            cell.border = {
+                top: { style: 'thin' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' }
+            };
+        });
+
+        // Datos con filas alternas
+        this.filteredTransactions.forEach((tx, index) => {
+            const row = worksheet.addRow([
+                tx.username,
+                tx.category_name,
+                tx.amount, // ← Sin formula, directamente el valor
+                new Date(tx.date), // ← Sin formula, directamente la fecha
+                tx.description || ''
+            ]);
+
+            // Filas alternas azul/blanco
+            row.eachCell(cell => {
+                cell.fill = {
+                    type: 'pattern',
+                    pattern: 'solid',
+                    fgColor: { argb: index % 2 === 0 ? 'FFFFFFFF' : 'FFe6f7ff' }
+                };
+                cell.border = {
+                    left: { style: 'thin' }, right: { style: 'thin' }, bottom: { style: 'thin' }
+                };
+            });
+        });
+
+        // AUTO-FILTROS (solución nativa)
+        worksheet.autoFilter = {
+            from: { row: headerRowNumber, column: 1 }, // Fila 4, col A (1-based)
+            to: { row: headerRowNumber, column: 5 }    // Fila 4, col E (1-based)
+        };
+
+        // INMOVILIZAR PANELES
+        const dataStartRow = headerRowNumber + 1;
+        worksheet.views = [{
+            state: 'frozen',
+            ySplit: headerRowNumber, // Congelar hasta la cabecera (fila 4)
+            activeCell: `A${dataStartRow}` // Celda activa inicio datos
+        }];
+
+        // AUTO-AJUSTAR COLUMNAS
+        worksheet.columns = [
+            { key: 'username', width: 20 },
+            { key: 'category', width: 15 },
+            { key: 'amount', width: 12, style: { numFmt: '#,##0.00' } },
+            { key: 'date', width: 12, style: { numFmt: 'dd/mm/yyyy' } },
+            { key: 'description', width: 30 }
+        ];
+
+        // Generar y descargar
+        const buffer = await workbook.xlsx.writeBuffer();
+        const blob = new Blob([buffer], {
+            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        });
+
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `transacciones_${new Date().toISOString().slice(0, 10)}.xlsx`;
+        a.click();
+        window.URL.revokeObjectURL(url);
+
+        this.showExportMenu = false;
+    }
+
+    async exportPDF() {
+        // Cargar html2pdf solo cuando se necesite
+        const html2pdf = (await import('html2pdf.js')).default;
+
+        const tableHtml = `
+    <div style="font-family: Arial, sans-serif; color: #333;">
+      <h2 style="color: #2c5282; margin-bottom: 5px;">Reporte de Transacciones Finanzas</h2>
+      <p style="color: #666; margin: 2px 0;">Generado: ${new Date().toLocaleDateString('es-ES')}</p>
+      <p style="color: #666; margin: 2px 0;">Total: ${this.filteredTransactions.length} transacciones</p>
+      
+      <table style="width:100%; border-collapse: collapse; margin-top: 15px;">
+        <thead>
+          <tr style="background-color: #2c5282; color: white;">
+            <th style="padding: 8px; border: 1px solid #2c5282; text-align: left;">Usuario</th>
+            <th style="padding: 8px; border: 1px solid #2c5282; text-align: left;">Categoría</th>
+            <th style="padding: 8px; border: 1px solid #2c5282; text-align: right;">Monto</th>
+            <th style="padding: 8px; border: 1px solid #2c5282; text-align: center;">Fecha</th>
+            <th style="padding: 8px; border: 1px solid #2c5282; text-align: left;">Descripción</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${this.filteredTransactions.map((tx, index) => `
+            <tr style="background-color: ${index % 2 === 0 ? '#f7fafc' : '#e6f7ff'};">
+              <td style="padding: 6px; border: 1px solid #ddd; color: #333;">${tx.username}</td>
+              <td style="padding: 6px; border: 1px solid #ddd; color: #333;">${tx.category_name}</td>
+              <td style="padding: 6px; border: 1px solid #ddd; color: #333; text-align: right;">${tx.amount.toFixed(2)} €</td>
+              <td style="padding: 6px; border: 1px solid #ddd; color: #333; text-align: center;">${new Date(tx.date).toLocaleDateString('es-ES')}</td>
+              <td style="padding: 6px; border: 1px solid #ddd; color: #333;">${(tx.description || '').substring(0, 30)}${(tx.description || '').length > 30 ? '...' : ''}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+
+        html2pdf()
+            .from(tableHtml)
+            .set({
+                margin: 10,
+                filename: `transacciones_${new Date().toISOString().slice(0, 10)}.pdf`,
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' } // ← horizontal para más espacio
+            })
+            .save();
+
+        this.showExportMenu = false;
+    }
+
+    async exportEmail() {
+        try {
+            const csvData = this.generateCSVFromData(this.filteredTransactions);
+
+            // Preparar datos para el resumen
+            const summaryData = this.filteredTransactions.map(tx => ({
+                username: tx.username,
+                category_name: tx.category_name,
+                cantidad: tx.amount,
+                description: tx.description,
+                fecha: tx.date                
+            }));
+
+            await this.transactionService.exportEmail({
+                csv_data: csvData,
+                total_transactions: this.filteredTransactions.length,
+                summary_data: summaryData  // ← Enviar datos para resumen
+            }).toPromise();
+
+            alert(`📧 Email enviado con ${this.filteredTransactions.length} transacciones filtradas`);
+            this.showExportMenu = false;
+        } catch (error) {
+            alert('❌ Error enviando email');
+        }
+    }
+
 }
+

@@ -164,3 +164,14 @@ async def delete_transaction(tx_id: str, user: dict):
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Transacción no encontrada")
     return result.deleted_count
+
+async def get_transactions_filtered(user: dict, filters: dict = None):
+    query = {}
+    if user["role"] != "admin":
+        query["user_id"] = user["userId"]
+    
+    # Aplicar filtros adicionales si existen
+    if filters:
+        query.update(filters)
+    
+    return await transactions_collection.find(query).to_list(length=1000)

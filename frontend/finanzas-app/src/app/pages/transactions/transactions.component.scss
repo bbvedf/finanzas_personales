@@ -331,6 +331,49 @@ th:last-child .filter-overlay {
 }
 
 
+/* Exports */
+.export-container {
+  position: relative;
+  display: inline-block;
+}
+
+.export-menu {
+  position: absolute;
+  top: 0;
+  left: 100%; // ← Lateral derecho
+  margin-left: 0.5rem;
+  background: var(--color-card-bg);  
+  border: 1px solid var(--color-input-border);
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  z-index: 1000;
+  min-width: 150px;
+  
+  button {
+    width: 100%;
+    text-align: left;
+    padding: 0.8rem;
+    border: none;
+    background: none;
+    color: var(--color-text) !important;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    
+    &:hover {
+      background: var(--color-input-bg);
+      color: var(--color-text) !important;
+    }
+    
+    i {
+      width: 16px;
+      color: var(--color-text) !important;
+    }
+  }
+}
+
+
 
 
 
@@ -397,4 +440,21 @@ th:last-child .filter-overlay {
       }
     }
   }
+
+.export-menu {
+    top: auto;
+    bottom: 0;
+    left: 100%;
+    right: auto;
+    margin-left: 0.5rem;
+    
+    // Por si se sale de la pantalla
+    &.right-edge {
+      left: auto;
+      right: 100%;
+      margin-left: 0;
+      margin-right: 0.5rem;
+    }
+  }
+
 }

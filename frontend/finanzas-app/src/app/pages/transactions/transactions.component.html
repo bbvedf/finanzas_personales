@@ -131,7 +131,23 @@
           <app-pagination [totalItems]="filteredTransactions.length" [pageSize]="pageSize" [currentPage]="currentPage"
             (pageChange)="currentPage = $event; updatePagedTransactions()"
             (pageSizeChange)="pageSize = $event; currentPage = 1; updatePagedTransactions()"></app-pagination>
+
+
         </div>
+        <div class="export-container">
+          <button class="button export-button" (click)="showExportMenu = !showExportMenu">
+            <i class="bi" [class.bi-download]="!showExportMenu" [class.bi-x]="showExportMenu"></i>
+            {{ showExportMenu ? 'Cancelar' : 'Exportar' }}
+          </button>
+
+          <div class="export-menu" *ngIf="showExportMenu" [class.right-edge]="isRightEdge()">
+            <button (click)="exportCSV()"><i class="bi bi-filetype-csv"></i> CSV</button>
+            <button (click)="exportExcel()"><i class="bi bi-file-earmark-excel"></i> Excel</button>
+            <button (click)="exportPDF()"><i class="bi bi-filetype-pdf"></i> PDF</button>
+            <button (click)="exportEmail()"><i class="bi bi-envelope"></i> Email</button>
+          </div>
+        </div>
+
       </div>
     </div>
 

@@ -49,4 +49,25 @@ export class TransactionService {
     return this.http.get<Transaction[]>(this.baseUrl, { params });
   }
 
+  exportCSV(filters?: any): Observable<Blob> {
+    let params = new HttpParams();
+
+    if (filters) {
+      if (filters.user_id) params = params.set('user_id', filters.user_id);
+      if (filters.category_id) params = params.set('category_id', filters.category_id);
+      if (filters.start_date) params = params.set('start_date', filters.start_date);
+      if (filters.end_date) params = params.set('end_date', filters.end_date);
+    }
+
+    return this.http.get(`${this.baseUrl}export/csv`, {
+      params: params,
+      responseType: 'blob'
+    });
+  }
+
+  exportEmail(data: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}export/email`, data);  // ← Enviar el objeto completo
+  }
+
 }
+
