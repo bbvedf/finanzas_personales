@@ -21,6 +21,10 @@ class CategoryOut(BaseModel):
     id: str
     name: str
     description: Optional[str] = None
+    user_id: str
+    
+    class Config:
+        from_attributes = True
 
 # Transacción
 class TransactionCreate(BaseModel):

@@ -40,26 +40,34 @@
                   Nombre
                   <ng-container *ngTemplateOutlet="iconGroup; context: { field: 'name' }"></ng-container>
                   <div *ngIf="activeFilter === 'name'" class="filter-overlay">
-                    <ng-container *ngTemplateOutlet="textFilter; context: { field: 'name', placeholder: 'Filtrar nombre' }"></ng-container>
+                    <ng-container
+                      *ngTemplateOutlet="textFilter; context: { field: 'name', placeholder: 'Filtrar nombre' }"></ng-container>
                   </div>
                 </th>
-
                 <th>
                   Descripción
                   <ng-container *ngTemplateOutlet="iconGroup; context: { field: 'description' }"></ng-container>
                   <div *ngIf="activeFilter === 'description'" class="filter-overlay">
-                    <ng-container *ngTemplateOutlet="textFilter; context: { field: 'description', placeholder: 'Filtrar descripción' }"></ng-container>
+                    <ng-container
+                      *ngTemplateOutlet="textFilter; context: { field: 'description', placeholder: 'Filtrar descripción' }"></ng-container>
                   </div>
                 </th>
-
+                <th>
+                  Usuario
+                  <ng-container *ngTemplateOutlet="iconGroup; context: { field: 'user_id' }"></ng-container>
+                  <div *ngIf="activeFilter === 'user_id'" class="filter-overlay">
+                    <ng-container
+                      *ngTemplateOutlet="textFilter; context: { field: 'user_id', placeholder: 'Filtrar usuario' }"></ng-container>
+                  </div>
+                </th>
                 <th>Acciones</th>
               </tr>
             </thead>
-
             <tbody>
               <tr *ngFor="let category of pagedCategories">
                 <td>{{ category.name }}</td>
                 <td>{{ category.description }}</td>
+                <td>{{ category.user_id }}</td>
                 <td>
                   <button class="icon-button edit-button" (click)="editCategory(category)">
                     <i class="bi bi-pencil-fill"></i>
@@ -70,33 +78,41 @@
                 </td>
               </tr>
               <tr *ngIf="filteredCategories.length === 0">
-                <td colspan="3">No se encontraron categorías.</td>
+                <td colspan="4">No se encontraron categorías.</td>
               </tr>
             </tbody>
           </table>
 
-          <app-pagination
-            [totalItems]="filteredCategories.length"
-            [pageSize]="pageSize"
-            [currentPage]="currentPage"
+          <app-pagination [totalItems]="filteredCategories.length" [pageSize]="pageSize" [currentPage]="currentPage"
             (pageChange)="currentPage = $event; updatePagedCategories()"
-            (pageSizeChange)="pageSize = $event; currentPage = 1; updatePagedCategories()"
-          ></app-pagination>
+            (pageSizeChange)="pageSize = $event; currentPage = 1; updatePagedCategories()"></app-pagination>
+        </div>
+
+        <div class="export-container">
+          <button class="button export-button" (click)="toggleExportMenu()">
+            <i class="bi" [class.bi-download]="!showExportMenu" [class.bi-x]="showExportMenu"></i>
+            {{ showExportMenu ? 'Cancelar' : 'Exportar' }}
+          </button>
+          <div class="export-menu" *ngIf="showExportMenu" [class.right-edge]="isRightEdge()">
+            <button (click)="exportCSV()"><i class="bi bi-filetype-csv"></i> CSV</button>
+            <button (click)="exportExcel()"><i class="bi bi-file-earmark-excel"></i> Excel</button>
+            <button (click)="exportPDF()"><i class="bi bi-filetype-pdf"></i> PDF</button>
+            <button (click)="exportEmail()"><i class="bi bi-envelope"></i> Email</button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</div>
 
-<!-- Modal de confirmación -->
-<div class="modal-backdrop" *ngIf="showDeleteModal">
-  <div class="modal">
-    <h3>Confirmar eliminación</h3>
-    <p>¿Seguro que deseas eliminar la categoría <strong>{{ categoryToDelete?.name }}</strong>?</p>
-
-    <div class="modal-buttons">
-      <button class="button cancel-button" (click)="closeDeleteModal()">Cancelar</button>
-      <button class="button delete-button" (click)="confirmDelete()">Eliminar</button>
+    <!-- Modal de confirmación -->
+    <div class="modal-backdrop" *ngIf="showDeleteModal">
+      <div class="modal">
+        <h3>Confirmar eliminación</h3>
+        <p>¿Seguro que deseas eliminar la categoría <strong>{{ categoryToDelete?.name }}</strong>?</p>
+        <div class="modal-buttons">
+          <button class="button cancel-button" (click)="closeDeleteModal()">Cancelar</button>
+          <button class="button delete-button" (click)="confirmDelete()">Eliminar</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -105,7 +121,8 @@
 <ng-template #iconGroup let-field="field">
   <div class="icon-group">
     <button class="filter-icon" (click)="toggleFilter(field)">
-      <i class="{{ filters[field].value ? 'bi bi-funnel-fill' : 'bi bi-funnel' }}"></i>
+      <i
+        class="{{ filters[field].value ? 'bi bi-funnel-fill' : 'bi bi-funnel' }}"></i>
     </button>
     <button class="sort-icon" (click)="toggleSort(field)">
       <i [ngClass]="{

@@ -35,7 +35,7 @@
   background: var(--color-card-bg);
   color: var(--color-text);
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .form-field {
@@ -63,7 +63,7 @@
     &:focus {
       outline: none;
       border-color: var(--color-link);
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
     }
   }
 }
@@ -95,7 +95,7 @@
 
 .table-wrapper {
   overflow-x: auto;
-
+  
   .table-footer {
     min-width: max-content;
     box-sizing: border-box;
@@ -108,18 +108,12 @@
   margin-top: 1rem;
   background: var(--color-card-bg);
 
-  th,
-  td {
+  th, td {
+    position: relative;
     padding: 0.8rem;
     text-align: left;
     border-bottom: 1px solid var(--color-input-border);
     color: var(--color-text);
-  }
-
-  th {
-    font-weight: bold;
-    background: var(--color-card-bg);
-    position: relative;
   }
 }
 
@@ -137,8 +131,7 @@
   font-size: 1.2rem;
   color: #555;
 
-  .fa-edit,
-  .fa-trash {
+  .fa-edit, .fa-trash {
     font-size: 18px;
   }
 }
@@ -188,12 +181,11 @@
     &:focus {
       outline: none;
       border-color: var(--color-link);
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
     }
   }
 }
 
-/* IconGroup + sort */
 .icon-group {
   display: inline-flex;
   gap: 4px;
@@ -226,18 +218,15 @@
   gap: 0.5rem;
   min-width: 200px;
   
-  // Prevenir que se salga de la pantalla
   max-width: 300px;
   word-wrap: break-word;
 }
 
-// Para el primer filtro (Usuario) que se sale por la izquierda
 th:first-child .filter-overlay {
   right: auto;
   left: 0;
 }
 
-// Para el último filtro (Fecha) que se sale por la derecha  
 th:last-child .filter-overlay {
   right: 0;
   left: auto;
@@ -255,7 +244,7 @@ th:last-child .filter-overlay {
   &:focus {
     outline: none;
     border-color: var(--color-link);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
   }
 }
 
@@ -274,7 +263,6 @@ th:last-child .filter-overlay {
   }
 }
 
-/* Fondo oscuro detrás del modal */
 .modal-backdrop {
   position: fixed;
   top: 0;
@@ -287,32 +275,69 @@ th:last-child .filter-overlay {
   z-index: 1000;
 }
 
-/* Caja del modal */
 .modal {
   background-color: var(--color-input-bg);
   padding: 20px;
   border-radius: 12px;
   max-width: 400px;
   width: 90%;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
   text-align: center;
 }
 
-/* Botones del modal */
 .modal-buttons {
   display: flex;
   justify-content: space-between;
   margin-top: 20px;
 }
 
+.export-container {
+  position: relative;
+  display: inline-block;
+}
+
+.export-menu {
+  position: absolute;
+  bottom: 0;
+  left: 100%;
+  margin-left: 0.5rem;
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-input-border);
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  z-index: 1000;
+  min-width: 150px;
+  
+  button {
+    width: 100%;
+    text-align: left;
+    padding: 0.8rem;
+    border: none;
+    background: none;
+    color: var(--color-text) !important;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    
+    &:hover {
+      background: var(--color-input-bg);
+      color: var(--color-text) !important;
+    }
+    
+    i {
+      width: 16px;
+      color: var(--color-text) !important;
+    }
+  }
+}
 
 @media (max-width: 768px) {
   .container {
     flex-direction: column;
   }
 
-  .form-col,
-  .table-col {
+  .form-col, .table-col {
     max-width: 100%;
   }
 
@@ -348,4 +373,18 @@ th:last-child .filter-overlay {
     }
   }
 
+  .export-menu {
+    top: auto;
+    bottom: 0;
+    left: 100%;
+    right: auto;
+    margin-left: 0.5rem;
+    
+    &.right-edge {
+      left: auto;
+      right: 100%;
+      margin-left: 0;
+      margin-right: 0.5rem;
+    }
+  }
 }

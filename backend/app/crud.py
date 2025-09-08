@@ -175,3 +175,18 @@ async def get_transactions_filtered(user: dict, filters: dict = None):
         query.update(filters)
     
     return await transactions_collection.find(query).to_list(length=1000)
+
+async def get_categories_filtered(user: dict, filters: dict = None):
+    query = {}
+    if user["role"] != "admin":
+        query["user_id"] = user["userId"]
+    
+    if filters:
+        # Transformar filtros para MongoDB con búsqueda case-insensitive
+        if 'name' in filters and filters['name']:
+            query['name'] = {'$regex': f".*{filters['name']}.*", '$options': 'i'}
+        
+        if 'description' in filters and filters['description']:
+            query['description'] = {'$regex': f".*{filters['description']}.*", '$options': 'i'}
+    
+    return await categories_collection.find(query).to_list(length=1000)

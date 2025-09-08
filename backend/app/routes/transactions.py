@@ -53,8 +53,6 @@ async def list_transactions(decoded=Depends(verify_token)):
     ]
 
 # POST crear transacción
-
-
 @router.post("/", response_model=TransactionOut)
 async def create_new_transaction(transaction: TransactionCreate, decoded=Depends(verify_token)):
     new_tx = await create_transaction({
