@@ -1,12 +1,12 @@
 from fastapi import FastAPI
 ##la carpeta api quedará obsoleta en detrimento de routes.
 ##estamos migrando componentes poco a poco.
-from app.api import users, stats
+from app.api import users
 ##
 from app.config import settings
 from motor.motor_asyncio import AsyncIOMotorClient
 from fastapi.middleware.cors import CORSMiddleware
-from app.routes import finanzas, categories, transactions
+from app.routes import finanzas, categories, transactions, stats
 from dotenv import load_dotenv
 load_dotenv()
 

@@ -14,36 +14,37 @@ def fix_id(doc):
 async def stats_by_user():
     from app.main import app
     db = app.mongodb
-
+    
+    # 1. Obtener transacciones agrupadas por user_id de MongoDB
     pipeline = [
-        {"$group": {"_id": "$user_id", "total": {"$sum": "$amount"}}},
-        {
-            "$lookup": {
-                "from": "users",
-                "localField": "_id",
-                "foreignField": "_id",
-                "as": "user"
-            }
-        },
-        {"$unwind": "$user"},
-        {
-            "$project": {
-                "user_id": {"$toString": "$_id"},  # mantener el schema
-                "username": "$user.username",
-                "total": 1
-            }
-        }
+        {"$group": {"_id": "$user_id", "total": {"$sum": "$amount"}}}
     ]
-
-    result = await db.transactions.aggregate(pipeline).to_list(length=None)
-    print("Stats by user result:", result)
-    if not result:
+    
+    transaction_totals = await db.transactions.aggregate(pipeline).to_list(length=None)
+    
+    if not transaction_totals:
         raise HTTPException(status_code=404, detail="No stats found")
-
-    return [
-        {"user_id": r["user_id"], "username": r["username"], "total": r["total"]}
-        for r in result
-    ]
+    
+    # 2. Obtener usuarios de PostgreSQL
+    from app.crud import get_users_from_postgres
+    pg_users = await get_users_from_postgres()
+    
+    # Crear mapeo de usuarios
+    user_map = {str(user['id']): user['username'] for user in pg_users}
+    
+    # 3. Combinar datos
+    result = []
+    for tx in transaction_totals:
+        user_id = str(tx["_id"])
+        username = user_map.get(user_id, "Usuario Desconocido")
+        
+        result.append({
+            "user_id": user_id,
+            "username": username,
+            "total": tx["total"]
+        })
+    result = sorted(result, key=lambda x: x["username"].lower())    
+    return result
 
 @router.get("/by-category", response_model=list[StatsByCategory])
 async def stats_by_category():
@@ -82,6 +83,7 @@ async def stats_by_category():
     if not result:
         raise HTTPException(status_code=404, detail="No stats found")
     
+    result = sorted(result, key=lambda x: x["category_name"].lower())
     return [
         {
             "category_id": str(r["category_id"]),
@@ -117,8 +119,7 @@ async def stats_over_time(start: str = None, end: str = None):
 
     result = await db.transactions.aggregate(pipeline).to_list(length=None)
     if not result:
-        raise HTTPException(status_code=404, detail="No stats found")
-    
+        raise HTTPException(status_code=404, detail="No stats found")    
     return [
         {"year": r["_id"]["year"], "month": r["_id"]["month"], "total": r["total"]}
         for r in result
