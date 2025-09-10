@@ -36,12 +36,11 @@ services:
   finanzas-frontend:
     build:
       context: ./frontend/finanzas-app    
-    #command: npm start
+    command: npm start
     ports:
       - "4200:4200"
     volumes:
       - ./frontend/finanzas-app:/app
-      - /app/node_modules # Este volumen anónimo evita que se sobrescriba
     depends_on:
       - finanzas-backend
     networks:
