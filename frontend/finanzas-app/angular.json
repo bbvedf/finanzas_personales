@@ -17,6 +17,7 @@
             "index": "src/index.html",
             "browser": "src/main.ts",
             "baseHref": "/finanzas/",
+            "deployUrl": "/finanzas/",
             "polyfills": [
               "zone.js"
             ],
@@ -25,6 +26,15 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "favicon.ico",
+                "input": "public",
+                "output": "/"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/assets"
               }
             ],
             "styles": [
@@ -36,6 +46,7 @@
           "configurations": {
             "production": {
               "baseHref": "/finanzas/",
+              "deployUrl": "/finanzas/",
               "budgets": [
                 {
                   "type": "initial",
@@ -52,6 +63,7 @@
             },
             "development": {
               "baseHref": "/finanzas/",
+              "deployUrl": "/finanzas/",
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
@@ -65,7 +77,9 @@
             "host": "0.0.0.0",
             "port": 4200,
             "publicHost": "ryzenpc.mooo.com",
-            "allowedHosts": ["ryzenpc.mooo.com"]
+            "allowedHosts": [
+              "ryzenpc.mooo.com"
+            ]
           },
           "configurations": {
             "production": {
@@ -92,6 +106,15 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "favicon.ico",
+                "input": "public",
+                "output": "/"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/assets"
               }
             ],
             "styles": [

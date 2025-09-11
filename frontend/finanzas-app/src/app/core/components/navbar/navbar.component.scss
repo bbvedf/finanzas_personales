@@ -1,15 +1,14 @@
-// src/app/core/components/navbar/navbar.component.scss
+// frontend/finanzas-app/src/app/core/components/navbar/navbar.component.scss
 :host {
   display: block;
 }
 
 .navbar-container {
   position: relative;
-  z-index: 1000; // que esté por encima del contenido
+  z-index: 1000;
 }
 
-.toolbar {
-  background-color: var(--color-bg);
+.toolbar {  
   color: var(--color-text);
   display: flex;
   align-items: center;
@@ -71,7 +70,7 @@
   min-width: 200px;
   animation: fadeIn 0.2s ease-out;
   z-index: 2000;
-  display: block; /* Asegura visibilidad */
+  display: block;
 }
 
 .submenu-header {

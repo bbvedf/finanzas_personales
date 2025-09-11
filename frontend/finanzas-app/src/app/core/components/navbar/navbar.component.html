@@ -1,6 +1,16 @@
-<!-- src/app/core/components/navbar/navbar.component.html -->
+<!-- frontend/finanzas-app/src/app/core/components/navbar/navbar.component.html -->
 <div class="navbar-container">
-  <header class="toolbar">
+  <header class="toolbar"
+    [style.background-color]="currentTheme === 'dark' ? '#1E1E1E' : '#F8F9FA'">
+    <img [src]="logoPath" alt="Logo" [style]="{
+    'height': '40px',
+    'width': '40px',
+    'margin-left': '10px',
+    'background-color': currentTheme === 'dark' ? '#1E1E1E' : '#F8F9FA',
+    'padding': '5px',
+    'border-radius': '50%',
+    'object-fit': 'cover'
+  }" />
     <span class="toolbar-title">Finanzas Personales</span>
     <span class="spacer"></span>
     <button class="hamburger-button" (click)="toggleMenu()" aria-label="Menú">
@@ -27,19 +37,14 @@
       <i class="bi bi-wallet2"></i> Finanzas
     </div>
     <button class="menu-item" (click)="navigateTo('/categories')">
-      <i class="bi bi-folder-fill"></i> <!-- ← Cambiado -->
-      Categorías
+      <i class="bi bi-folder-fill"></i> Categorías
     </button>
     <button class="menu-item" (click)="navigateTo('/transactions')">
-      <i class="bi bi-credit-card-fill"></i> <!-- ← Cambiado -->
-      Transacciones
+      <i class="bi bi-credit-card-fill"></i> Transacciones
     </button>
     <button class="menu-item" (click)="navigateTo('/stats')">
-      <i class="bi bi-bar-chart-fill"></i>
-      Estadísticas
+      <i class="bi bi-bar-chart-fill"></i> Estadísticas
     </button>
-
-
 
     <!-- Herramientas -->
     <button class="menu-item" (click)="goToCompoundInterest()">

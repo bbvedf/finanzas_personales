@@ -13,7 +13,7 @@
   },
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --host 0.0.0.0 --port 4200 --public-host ryzenpc.mooo.com --serve-path /finanzas",
+    "start": "ng serve --host 0.0.0.0 --port 4200 --public-host ryzenpc.mooo.com",
     "build": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
