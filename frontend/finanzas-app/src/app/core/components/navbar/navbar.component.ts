@@ -78,6 +78,11 @@ export class NavbarComponent {
     this.closeMenu();
   }
 
+  goToBasicCalculator() {
+    window.location.href = '/dashboard?tab=basic-calculator';
+    this.closeMenu();
+  }
+  
   logout() {
     if (window.AuthBridge?.clearAuth) {
       window.AuthBridge.clearAuth();
