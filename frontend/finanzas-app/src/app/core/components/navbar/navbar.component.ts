@@ -84,6 +84,24 @@ export class NavbarComponent {
     this.closeMenu();
   }
   
+  goToContactos() {
+      console.log('🔵 Navegando a Contactos desde Finanzas...');
+      
+      // Obtener token actual
+      const token = localStorage.getItem('token') || window.AuthBridge?.getToken?.();
+      
+      if (token && token.includes('.')) { // Verificar que parece JWT
+          // Redirigir a Contactos con token
+          window.location.href = `https://ryzenpc.mooo.com/contactos/?token=${encodeURIComponent(token)}&from=finanzas&t=${Date.now()}`;
+      } else {
+          console.warn('⚠️ Token no válido o no encontrado');
+          // Redirigir a Contactos sin token (middleware redirigirá a login)
+          window.location.href = 'https://ryzenpc.mooo.com/contactos/';
+      }
+      
+      this.closeMenu();
+  }
+
 logout() {
     //console.log('🔴 LOGOUT desde Finanzas - Iniciando');
     
