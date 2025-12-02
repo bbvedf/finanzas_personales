@@ -115,25 +115,131 @@
   }
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+// SOLO REEMPLAZAR LA PARTE DEL MODAL (líneas 71 en adelante)
+
+.logout-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    animation: fadeIn 0.2s ease-in;
 }
 
-@media (max-width: 768px) {
-  .menu-dropdown {
-    right: 0.75rem;
-    top: calc(100% + 3.25rem);
-  }
+.logout-modal {
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-input-border);
+    border-radius: 8px;
+    padding: 2rem;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    color: var(--color-text);
+    animation: slideIn 0.3s ease-out;
+}
 
-  .menu-item {
-    padding: 0.6rem 1rem;
-    font-size: 0.95rem;
-  }
+.logout-modal h3 {
+    margin: 0 0 1rem 0;
+    color: var(--color-text);
+    font-size: 1.25rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logout-modal p {
+    margin: 0 0 1.5rem 0;
+    color: var(--color-text);
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.logout-modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+/* Botón Cancelar */
+.logout-modal-cancel {
+    background: var(--color-card-bg);
+    color: var(--color-text);
+    border: 1px solid var(--color-input-border);
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.logout-modal-cancel:hover {
+    background: var(--color-input-bg);
+}
+
+/* Botón Cerrar Sesión */
+.logout-modal-confirm {
+    background: #ff4444; /* rojo fijo igual que Compras */
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.875rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.logout-modal-confirm:hover {
+    background: #cc0000;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+// Mantener el fadeIn que ya tenías
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 480px) {
+    .logout-modal {
+        width: 95%;
+        padding: 1.5rem;
+    }
+
+    .logout-modal-buttons {
+        flex-direction: column;
+    }
+
+    .logout-modal-cancel,
+    .logout-modal-confirm {
+        width: 100%;
+        justify-content: center;
+    }
 }
