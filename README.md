@@ -132,7 +132,7 @@ MIT License - ver LICENSE para más detalles.
     </td>
     <td align="center" width="33%">
       <strong>Componente Transacciones</strong><br>
-      <img src="screenshots/03-tabla-crud-transacciones" width="300"><br>      
+      <img src="screenshots/03-tabla-crud-transacciones.png" width="300"><br>      
     </td>
   </tr>
   <tr style="background-color: #f6f8fa">
