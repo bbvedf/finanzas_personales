@@ -2,6 +2,11 @@
 
 Proyecto de aplicación de finanzas personales usando FastAPI + Angular.  
 
+## 🔗 Integración  
+Esta aplicación está diseñada para funcionar en el subdirectorio /finanzas/ como parte del ecosistema de aplicaciones.
+
+URL de producción: https://ryzenpc.mooo.com/finanzas/
+
 ## Stack Tecnológico  
 
 ![Python](https://img.shields.io/badge/python-3.11-blue)
