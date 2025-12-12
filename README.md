@@ -112,3 +112,41 @@ finanzas_personales/
 ├─ .env  
 ├─ README.md  
 └─ .gitignore  
+
+
+## 📄 Licencia  
+MIT License - ver LICENSE para más detalles.  
+
+
+## 📸 Capturas de pantalla  
+
+<table>
+  <tr>
+    <td align="center" width="33%">
+      <strong>Integración en otras aplicaciones </strong><br>
+      <img src="screenshots/01-integracion-compras.png" width="300"><br>      
+    </td>
+    <td align="center" width="33%">
+      <strong>Componente Categorías</strong><br>
+      <img src="screenshots/02-tabla-crud-categorias.png" width="300"><br>      
+    </td>
+    <td align="center" width="33%">
+      <strong>Componente Transacciones</strong><br>
+      <img src="screenshots/03-tabla-crud-transacciones" width="300"><br>      
+    </td>
+  </tr>
+  <tr style="background-color: #f6f8fa">
+    <td align="center" width="33%">
+      <strong>Detalle filtros, búsqueca, paginación, export, ... </strong><br>
+      <img src="screenshots/04-Filtros-busqueda-paginacion-exports.png" width="300"><br>      
+    </td>
+    <td align="center" width="33%">
+      <strong>Dashboard gráficas</strong><br>
+      <img src="screenshots/05-graficas.png" width="300"><br>      
+    </td>
+    <td align="center" width="33%">
+      <strong>Tema claro/oscuro</strong><br>
+      <img src="screenshots/06-tema-claro.png" width="300"><br>      
+    </td>
+  </tr>
+</table>
